@@ -1,4 +1,4 @@
-${moduleName}
+Pharmacy Module
 ==========================
 
 Description
