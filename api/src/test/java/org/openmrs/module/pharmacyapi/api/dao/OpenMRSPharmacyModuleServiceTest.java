@@ -7,7 +7,12 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.pharmacyapi.api;
+package org.openmrs.module.pharmacyapi.api.dao;
+
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +24,6 @@ import org.openmrs.api.UserService;
 import org.openmrs.module.pharmacyapi.Item;
 import org.openmrs.module.pharmacyapi.api.dao.OpenMRSPharmacyModuleDao;
 import org.openmrs.module.pharmacyapi.api.impl.OpenMRSPharmacyModuleServiceImpl;
-import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 /**
  * This is a unit test, which verifies logic in OpenMRSPharmacyModuleService. It doesn't extend
@@ -46,16 +48,16 @@ public class OpenMRSPharmacyModuleServiceTest {
 	@Test
 	public void saveItem_shouldSetOwnerIfNotSet() {
 		//Given
-		Item item = new Item();
+		final Item item = new Item();
 		item.setDescription("some description");
 		
-		when(dao.saveItem(item)).thenReturn(item);
+		when(this.dao.saveItem(item)).thenReturn(item);
 		
-		User user = new User();
-		when(userService.getUser(1)).thenReturn(user);
+		final User user = new User();
+		when(this.userService.getUser(1)).thenReturn(user);
 		
 		//When
-		basicModuleService.saveItem(item);
+		this.basicModuleService.saveItem(item);
 		
 		//Then
 		assertThat(item, hasProperty("owner", is(user)));
