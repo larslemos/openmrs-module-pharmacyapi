@@ -10,4 +10,5 @@ omod/.classpath
 omod/.project
 omod/.externalToolBuilders
 omod/maven-eclipse.xml
+.java-version
 
