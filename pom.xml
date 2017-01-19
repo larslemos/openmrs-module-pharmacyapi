@@ -54,5 +54,21 @@
 
     <properties>
         <openmrsPlatformVersion>1.11.5</openmrsPlatformVersion>
+		<java.version>1.7</java.version>
     </properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<target>${java.version}</target>
+						<source>${java.version}</source>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>
