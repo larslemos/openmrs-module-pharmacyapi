@@ -1,30 +1,36 @@
-Pharmacy Module
-==========================
+<br/><br/><br/>
+<img src="https://s3-eu-west-1.amazonaws.com/esaude/images/esaude-site-header.png" alt="OpenMRS"/>
+<br/><br/><br/>
 
-Description
------------
-This is a very basic module which can be used as a starting point in creating a new module.
 
-Building from Source
---------------------
-You will need to have Java 1.6+ and Maven 2.x+ installed.  Use the command 'mvn package' to 
-compile and package the module.  The .omod file will be in the omod/target folder.
+# eSaude Pharmacy API
 
-Alternatively you can add the snippet provided in the [Creating Modules](https://wiki.openmrs.org/x/cAEr) page to your 
-omod/pom.xml and use the mvn command:
+[![Build Status](https://travis-ci.org/esaude/openmrs-module-pharmacyapi.svg?branch=master)](https://travis-ci.org/esaude/openmrs-module-pharmacyapi)
+[![eSaude Slack](https://slack.esaude.org/badge.svg)](https://slack.esaude.org)
 
-    mvn package -P deploy-web -D deploy.path="../../openmrs-1.8.x/webapp/src/main/webapp"
+This module provides the pharmacy REST resources for the [eSaude POC system](https://github.com/esaude/esaude-emr-poc). For
+further information please see the [documentation](https://paper.dropbox.com/doc/eSaude-Pharmacy-Resources-HDsKPdMA9pAKXxBUi0IHU).
 
-It will allow you to deploy any changes to your web 
-resources such as jsp or js files without re-installing the module. The deploy path says 
-where OpenMRS is deployed.
+## Development
 
-Installation
-------------
-1. Build the module to produce the .omod file.
-2. Use the OpenMRS Administration > Manage Modules screen to upload and install the .omod file.
+### Prerequisites
 
-If uploads are not allowed from the web (changable via a runtime property), you can drop the omod
-into the ~/.OpenMRS/modules folder.  (Where ~/.OpenMRS is assumed to be the Application 
-Data Directory that the running openmrs is currently using.)  After putting the file in there 
-simply restart OpenMRS/tomcat and the module will be loaded and started.
+Make sure you have Maven 3+ and Java 1.7+ installed.
+
+### Building
+
+Clone the repo:
+
+```
+git clone https://github.com/esaude/openmrs-module-pharmacyapi.git
+```
+
+Build with Maven:
+
+```
+mvn clean install
+```
+
+## License
+
+[MPL 2.0 w/ HD](http://openmrs.org/license/)
