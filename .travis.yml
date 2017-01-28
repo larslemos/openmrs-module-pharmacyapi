@@ -1,0 +1,5 @@
+language: java
+jdk:
+ - oraclejdk7
+notifications:
+  slack: esaude:fJniHlqocbXRRIkoDY1Ky4dw
