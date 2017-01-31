@@ -21,7 +21,8 @@
 	<require_version>1.11.5</require_version>
 
 	<require_modules>
-		<require_module version="${openMRSWebServicesVersion}">org.openmrs.module.webservices.rest</require_module>
+		<require_module version="${openMRSWebServicesVersion}">org.openmrs.module.webservices.rest
+		</require_module>
 	</require_modules>
 
 	<!-- Extensions -->
@@ -35,8 +36,10 @@
 	</aware_of_modules>
 
 
-	<!-- AOP <advice> <point>org.openmrs.api.FormService</point> <class>@MODULE_PACKAGE@.advice.DuplicateFormAdvisor</class> 
-		</advice> /AOP -->
+	<advice>
+		<point>org.openmrs.api.OrderService</point>
+		<class>org.openmrs.module.pharmacyapi.advice.ParseObsToOrderAdvice</class>
+	</advice>
 
 
 	<!-- Required Privileges <privilege> <name>Form Entry</name> <description>Allows 

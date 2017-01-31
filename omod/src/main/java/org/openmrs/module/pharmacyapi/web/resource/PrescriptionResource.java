@@ -22,14 +22,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1
-		+ "/prescription", order = 1, supportedClass = Prescription.class, supportedOpenmrsVersions = { "1.8.*",
-				"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+@Resource(name = RestConstants.VERSION_1 + "/prescription", order = 1, supportedClass = Prescription.class, supportedOpenmrsVersions = {
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
 public class PrescriptionResource extends DataDelegatingCrudResource<Prescription> {
-
+	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(final Representation rep) {
-
+		
 		if (rep instanceof RefRepresentation) {
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -53,52 +52,60 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 			return null;
 		}
 	}
-
+	
 	@Override
 	public Prescription newDelegate() {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-
+	
 	@Override
 	public Prescription save(final Prescription delegate) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-
+	
 	@Override
 	protected void delete(final Prescription delegate, final String reason, final RequestContext context)
-			throws ResponseException {
+	        throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-
+	
 	@Override
 	public void purge(final Prescription delegate, final RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-
+	
 	@Override
 	public Prescription getByUniqueId(final String uniqueId) {
 		final Order order = Context.getOrderService().getOrderByUuid(uniqueId);
 		return new Prescription(order);
 	}
-
+	
 	@Override
 	protected PageableResult doSearch(final RequestContext context) {
-
+		
 		final String patientUuid = context.getRequest().getParameter("patient");
-
+		
 		if (patientUuid == null) {
 			return new EmptySearchResult();
 		}
-
+		
 		final Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+		
+		if (patient == null) {
+			return new EmptySearchResult();
+		}
+		
 		final List<Order> orders = Context.getOrderService().getActiveOrders(patient, null, null, null);
-
+		
+		return new NeedsPaging<Prescription>(this.getPrescritions(orders), context);
+	}
+	
+	private List<Prescription> getPrescritions(final List<Order> orders) {
 		final List<Prescription> prescriptions = new ArrayList<>();
 
 		for (final Order order : orders) {
 			prescriptions.add(new Prescription(order));
 		}
-
-		return new NeedsPaging<Prescription>(prescriptions, context);
+		return prescriptions;
 	}
 }

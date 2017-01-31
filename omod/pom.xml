@@ -8,7 +8,6 @@
 	</parent>
 
 	<artifactId>pharmacyapi-omod</artifactId>
-	<packaging>jar</packaging>
 	<name>OpenMRS Pharmacy Module OMOD</name>
 	<description>Omod submodule for OpenMRS Pharmacy Module</description>
 

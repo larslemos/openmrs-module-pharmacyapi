@@ -1,4 +1,4 @@
-package org.openmrs.module.pharmacyapi.api;
+package org.openmrs.module.pharmacyapi.api.adapter;
 
 import static org.openmrs.module.pharmacyapi.api.util.MappedConcepts.DOSAGE_AMOUNT;
 import static org.openmrs.module.pharmacyapi.api.util.MappedConcepts.DOSAGE_FREQUENCY;
@@ -21,16 +21,15 @@ import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.OrderFrequency;
 import org.openmrs.Patient;
+import org.openmrs.api.impl.BaseOpenmrsService;
 
-;
-
-public class ObsOrderAdapter {
+public class ObsOrderAdapter extends BaseOpenmrsService {
 	
 	public List<Order> adaptPatientObsPrescriptionToOrders(final Patient patient, final Encounter encounter) {
 		final List<Order> orders = new ArrayList<>();
 		final List<Obs> convSetObservations = new ArrayList<>();
 
-		final Set<Obs> allObservations = encounter.getObs();
+		final Set<Obs> allObservations = encounter.getAllObs();
 
 		for (final Obs obs : allObservations) {
 
@@ -44,6 +43,9 @@ public class ObsOrderAdapter {
 			for (final Obs convSetObservation : convSetObservations) {
 
 				final Order order = this.prepareDrugOrder(convSetObservation, allObservations);
+
+				order.setPatient(patient);
+				order.setEncounter(encounter);
 				orders.add(order);
 			}
 		}
@@ -66,6 +68,7 @@ public class ObsOrderAdapter {
 				
 				if (DOSING_UNITS.equals(observation.getConcept().getUuid())) {
 					order.setDoseUnits(observation.getValueCoded());
+					order.setQuantityUnits(observation.getValueCoded());
 					continue;
 				}
 				
@@ -102,15 +105,22 @@ public class ObsOrderAdapter {
 					final Drug drug = new Drug();
 					drug.setConcept(observation.getValueCoded());
 					order.setDrug(drug);
-					continue;
 				}
 			}
 		}
+		
+		order.setQuantity(0.0);
+		order.setNumRefills(0);
 		
 		return order;
 	}
 	
 	private boolean isConvSetMember(final Obs convSetObservation, final Obs observation) {
+		
+		if (observation.getObsGroup() == null) {
+			return false;
+		}
+		
 		return convSetObservation.getUuid().equals(observation.getObsGroup().getUuid());
 	}
 	
