@@ -1,7 +1,7 @@
 /*
  * Friends in Global Health - FGH © 2016
  */
-package org.openmrs.module.pharmacyapi.api;
+package org.openmrs.module.pharmacyapi.api.adapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

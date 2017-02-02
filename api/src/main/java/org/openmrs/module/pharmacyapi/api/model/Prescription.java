@@ -1,7 +1,7 @@
 /*
  * Friends in Global Health - FGH © 2016
  */
-package org.openmrs.module.pharmacyapi.model;
+package org.openmrs.module.pharmacyapi.api.model;
 
 import java.io.Serializable;
 
