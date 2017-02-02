@@ -10,8 +10,6 @@ import org.openmrs.api.OpenmrsService;
  * @author Stélio Moiane
  */
 public interface PrescriptionService extends OpenmrsService {
-	
-	String NAME = "org.openmrs.module.pharmacyapi.service.PrescriptionService";
-	
+
 	void parseObsToOrders(final Patient patient);
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacyapi.model.Prescription;
+import org.openmrs.module.pharmacyapi.api.model.Prescription;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;

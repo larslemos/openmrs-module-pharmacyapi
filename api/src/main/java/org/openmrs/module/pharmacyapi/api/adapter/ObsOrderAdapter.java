@@ -112,6 +112,9 @@ public class ObsOrderAdapter extends BaseOpenmrsService {
 		order.setQuantity(0.0);
 		order.setNumRefills(0);
 		
+		// workaroung to link the obs module to order
+		order.setCommentToFulfiller(convSetObservation.getUuid());
+		
 		return order;
 	}
 	

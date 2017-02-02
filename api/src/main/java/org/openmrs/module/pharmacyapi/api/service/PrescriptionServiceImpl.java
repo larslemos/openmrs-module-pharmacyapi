@@ -51,7 +51,7 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 		
 		final OrderService orderService = Context.getOrderService();
 		
-		for (final Order order : orders) {
+		for (Order order : orders) {
 			
 			if (order instanceof DrugOrder) {
 				final OrderType orderType = orderService.getOrderTypeByUuid(MappedOrders.DRUG_ORDER);
@@ -79,7 +79,7 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 			order.setCareSetting(careSetting);
 			
 			try {
-				orderService.saveOrder(order, null);
+				order = orderService.saveOrder(order, null);
 			}
 			catch (final AmbiguousOrderException ex) {
 				// There is an order with the same drug active
