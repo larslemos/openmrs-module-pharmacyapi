@@ -3,11 +3,13 @@
  */
 package org.openmrs.module.pharmacyapi.api.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.openmrs.CareSetting;
 import org.openmrs.Concept;
+import org.openmrs.ConceptSearchResult;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
@@ -18,11 +20,13 @@ import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Provider;
-import org.openmrs.api.AmbiguousOrderException;
+import org.openmrs.api.APIException;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacyapi.api.adapter.ObsOrderAdapter;
+import org.openmrs.module.pharmacyapi.api.model.Prescription;
 import org.openmrs.module.pharmacyapi.api.util.MappedConcepts;
 import org.openmrs.module.pharmacyapi.api.util.MappedOrders;
 
@@ -33,8 +37,12 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 	
 	private ObsOrderAdapter obsOrderAdapter;
 	
+	private OrderService orderService;
+	
+	private ConceptService conceptService;
+	
 	@Override
-	public void parseObsToOrders(final Patient patient) {
+	public void parseObsToOrders(final Patient patient) throws APIException {
 		
 		final Encounter lastEncounter = this.getLastEncounter(patient);
 		
@@ -49,15 +57,13 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 	
 	private void saveOrders(final List<Order> orders, final Encounter encounter) {
 		
-		final OrderService orderService = Context.getOrderService();
-		
-		for (Order order : orders) {
+		for (final Order order : orders) {
 			
 			if (order instanceof DrugOrder) {
-				final OrderType orderType = orderService.getOrderTypeByUuid(MappedOrders.DRUG_ORDER);
+				final OrderType orderType = this.orderService.getOrderTypeByUuid(MappedOrders.DRUG_ORDER);
 				order.setOrderType(orderType);
 				
-				final OrderFrequency orderFrequency = orderService.getOrderFrequencyByConcept(((DrugOrder) order)
+				final OrderFrequency orderFrequency = this.orderService.getOrderFrequencyByConcept(((DrugOrder) order)
 				        .getFrequency().getConcept());
 				((DrugOrder) order).setFrequency(orderFrequency);
 				
@@ -75,16 +81,27 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 			}
 			
 			order.setOrderer(this.getProvider(encounter));
-			final CareSetting careSetting = orderService.getCareSettingByUuid(MappedOrders.CARE_SETTING_OUTPATIENT);
+			final CareSetting careSetting = this.orderService.getCareSettingByUuid(MappedOrders.CARE_SETTING_OUTPATIENT);
 			order.setCareSetting(careSetting);
 			
-			try {
-				order = orderService.saveOrder(order, null);
+			if (this.hasOrder(encounter.getPatient(), order, careSetting)) {
+				return;
 			}
-			catch (final AmbiguousOrderException ex) {
-				// There is an order with the same drug active
+			
+			this.orderService.saveOrder(order, null);
+		}
+	}
+	
+	private boolean hasOrder(final Patient patient, final Order order, final CareSetting careSetting) {
+		final List<Order> foundOrders = this.orderService.getOrders(patient, careSetting, null, false);
+		
+		for (final Order foundOrder : foundOrders) {
+			if (order.getCommentToFulfiller().equals(foundOrder.getCommentToFulfiller())) {
+				return true;
 			}
 		}
+		
+		return false;
 	}
 	
 	private Provider getProvider(final Encounter encounter) {
@@ -109,7 +126,91 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 		return Context.getEncounterService().getEncounterByUuid(obsGroup.getEncounter().getUuid());
 	}
 	
-	public void setObsOrderAdapter(final ObsOrderAdapter obsOrderAdapter) {
+	public void setObsOrderAdapter(final ObsOrderAdapter obsOrderAdapter) throws APIException {
 		this.obsOrderAdapter = obsOrderAdapter;
+	}
+	
+	@Override
+	public void setOrderService(final OrderService orderService) throws APIException {
+		this.orderService = orderService;
+	}
+	
+	@Override
+	public void setConceptService(final ConceptService conceptService) {
+		this.conceptService = conceptService;
+	}
+	
+	@Override
+	public List<Prescription> findPrescriptionsByPatient(final Patient patient) throws APIException {
+
+		final List<Prescription> prescriptions = new ArrayList<>();
+
+		final List<Order> orders = this.orderService.getActiveOrders(patient, null, null, null);
+
+		for (final Order order : orders) {
+			final Prescription prescription = new Prescription(order);
+
+			this.setPrescriptionInstructions(order, prescription);
+			prescription.setProvider(order.getOrderer().getName());
+			prescription.setPrescriptionDate(order.getEncounter().getEncounterDatetime());
+			prescription.setDrugToPickUp(((DrugOrder) order).getQuantity());
+
+			if (this.hasArvDrug(order)) {
+				prescription.setConceptParentUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
+				prescription.setDrugPickedUp(this.calculateDrugPikckedUp((DrugOrder) order));
+				prescription.setDrugToPickUp(((DrugOrder) order).getQuantity() - prescription.getDrugPickedUp());
+			}
+
+			prescriptions.add(prescription);
+		}
+
+		return prescriptions;
+	}
+	
+	private boolean hasArvDrug(final Order order) {
+		
+		final Concept concept = this.conceptService.getConceptByUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
+		final List<ConceptSearchResult> findConceptAnswers = this.conceptService.findConceptAnswers(null,
+		    Context.getLocale(), concept);
+		
+		for (final ConceptSearchResult conceptSearchResult : findConceptAnswers) {
+			if (order.getConcept().getUuid().equals(conceptSearchResult.getConcept().getUuid())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void setPrescriptionInstructions(final Order order, final Prescription prescription) {
+		final String dosingInstructions = ((DrugOrder) order).getDosingInstructions();
+		final Concept concept = this.conceptService.getConceptByUuid(dosingInstructions);
+		prescription.setDosingInstructions(concept.getNames().iterator().next().getName());
+	}
+	
+	@Override
+	public Double calculateDrugPikckedUp(final DrugOrder order) throws APIException {
+
+		Double quantity = 0.0;
+		final List<Obs> observations = new ArrayList<>();
+
+		DrugOrder tempOrder = order;
+		while (tempOrder.getPreviousOrder() != null) {
+			observations.addAll(tempOrder.getEncounter().getObs());
+			tempOrder = (DrugOrder) tempOrder.getPreviousOrder();
+		}
+
+		for (final Obs observation : observations) {
+
+			if (this.isTheSameConceptAndSameDrug(order, observation)) {
+				quantity += observation.getValueNumeric();
+			}
+		}
+
+		return quantity;
+	}
+	
+	private boolean isTheSameConceptAndSameDrug(final DrugOrder order, final Obs observation) {
+		return MappedConcepts.MEDICATION_QUANTITY.equals(observation.getConcept().getUuid())
+		        && order.getConcept().getUuid().equals(observation.getOrder().getConcept().getUuid());
 	}
 }

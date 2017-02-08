@@ -34,6 +34,54 @@
 					<bean id="obsOrderAdapter"
 						class="org.openmrs.module.pharmacyapi.api.adapter.ObsOrderAdapter" />
 				</property>
+				<property name="orderService">
+					<ref bean="orderService" />
+				</property>
+				<property name="conceptService">
+					<ref bean="conceptService" />
+				</property>
+			</bean>
+		</property>
+		<property name="preInterceptors">
+			<ref bean="serviceInterceptors" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributeSource" />
+		</property>
+	</bean>
+
+	<bean id="dispensationService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<bean
+				class="org.openmrs.module.pharmacyapi.api.service.DispensationServiceImpl">
+				<property name="providerService">
+					<ref bean="providerService" />
+				</property>
+				<property name="orderService">
+					<ref bean="orderService" />
+				</property>
+				<property name="patientService">
+					<ref bean="patientService" />
+				</property>
+				<property name="encounterService">
+					<ref bean="encounterService" />
+				</property>
+				<property name="locationService">
+					<ref bean="locationService" />
+				</property>
+				<property name="conceptService">
+					<ref bean="conceptService" />
+				</property>
+				<property name="personService">
+					<ref bean="personService" />
+				</property>
+				<property name="dbSessionManager">
+					<ref bean="dbSessionManager" />
+				</property>
 			</bean>
 		</property>
 		<property name="preInterceptors">
@@ -53,4 +101,17 @@
 		</property>
 	</bean>
 
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.pharmacyapi.api.service.DispensationService</value>
+				<ref local="dispensationService" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="dbSessionManager" class="org.openmrs.module.pharmacyapi.db.DbSessionManagerImpl">
+        <property name="sessionFactory"><ref bean="dbSessionFactory"/></property>
+    </bean>
+    
 </beans>

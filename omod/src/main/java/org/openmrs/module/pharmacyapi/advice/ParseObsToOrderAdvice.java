@@ -16,9 +16,9 @@ import org.springframework.aop.MethodBeforeAdvice;
 public class ParseObsToOrderAdvice implements MethodBeforeAdvice {
 	
 	@Override
-	public void before(final Method method, final Object[] args, final Object target) throws Throwable {
+	public void before(final Method method, final Object[] args, final Object target) {
 		
-		if (method.getName().equals("getActiveOrders")) {
+		if (method.getName().equals("findPrescriptionsByPatient")) {
 			
 			final Patient patient = (Patient) args[0];
 			final PrescriptionService prescriptionService = Context.getService(PrescriptionService.class);

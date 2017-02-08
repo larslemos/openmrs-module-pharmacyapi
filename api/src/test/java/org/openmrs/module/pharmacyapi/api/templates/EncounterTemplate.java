@@ -12,6 +12,7 @@ import static org.openmrs.module.pharmacyapi.api.templates.ObsTemplate.DRUG_ROUT
 import static org.openmrs.module.pharmacyapi.api.templates.ObsTemplate.DURATION;
 import static org.openmrs.module.pharmacyapi.api.templates.ObsTemplate.DURATION_UNITS;
 import static org.openmrs.module.pharmacyapi.api.templates.ObsTemplate.JUSTIFICATION_TO_CHANGE_ARV_TREATMENT;
+import static org.openmrs.module.pharmacyapi.api.templates.ObsTemplate.MEDICATION_QUANTITY;
 import static org.openmrs.module.pharmacyapi.api.templates.ObsTemplate.POC_MAPPING_PRESCRIPTION_DATE;
 import static org.openmrs.module.pharmacyapi.api.templates.ObsTemplate.PREVIOUS_ANTIRETROVIRAL_DRUGS;
 import static org.openmrs.module.pharmacyapi.api.templates.ObsTemplate.REASON_ANTIRETROVIRALS_STOPPED;
@@ -33,6 +34,8 @@ public class EncounterTemplate implements BaseTemplateLoader {
 	
 	public static final String VALID = "VALID";
 	
+	public static final String DISPENSATION = "DISPENSATION";
+	
 	@Override
 	public void load() {
 		Fixture.of(Encounter.class).addTemplate(VALID, new Rule() {
@@ -46,6 +49,15 @@ public class EncounterTemplate implements BaseTemplateLoader {
 				        DOSAGE_FREQUENCY, DOSING_INSTRUCTIONS, DOSING_UNITS, DRUG_ROUTES, DURATION, DURATION_UNITS,
 				        JUSTIFICATION_TO_CHANGE_ARV_TREATMENT, POC_MAPPING_PRESCRIPTION_DATE, PREVIOUS_ANTIRETROVIRAL_DRUGS,
 				        REASON_ANTIRETROVIRALS_STOPPED));
+			}
+		});
+		
+		Fixture.of(Encounter.class).addTemplate(DISPENSATION, new Rule() {
+			
+			{
+				this.add("patient", this.one(Patient.class, PatientTemplate.VALID));
+				this.add("encounterDatetime", this.instant("now"));
+				this.add("obs", this.has(1).of(Obs.class, MEDICATION_QUANTITY));
 			}
 		});
 	}

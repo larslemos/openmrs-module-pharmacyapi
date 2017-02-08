@@ -35,4 +35,15 @@ public class MappedConcepts {
 	public static final String TREATMENT_PRESCRIBED = "e1de3092-1d5f-11e0-b929-000c29ad1d07";
 	
 	public static final String POC_MAPPING_PRESCRIPTION_DATE = "488e6803-c7db-43b2-8911-8d5d2a8472fd";
+	
+	public static final String DISPENSATION_SET = "b1b818cd-a38b-4264-9e59-c2e722141b83";
+	
+	public static final String MEDICATION_QUANTITY = "e1de2ca0-1d5f-11e0-b929-000c29ad1d07";
+	
+	public static final String DATE_OF_NEXT_PICK_UP = "e1e2efd8-1d5f-11e0-b929-000c29ad1d07";
+	
+	public static final String REGIMEN = "e1d83e4e-1d5f-11e0-b929-000c29ad1d07";
+	
+	public static final String POSOLOGY = "e1de28ae-1d5f-11e0-b929-000c29ad1d07";
+	
 }

@@ -5,8 +5,10 @@ package org.openmrs.module.pharmacyapi.api.templates;
 
 import java.util.Set;
 
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.module.pharmacyapi.api.util.EntityFactory;
 import org.openmrs.module.pharmacyapi.api.util.MappedConcepts;
 
 import br.com.six2six.fixturefactory.processor.Processor;
@@ -33,6 +35,19 @@ public class EncounterProcessor implements Processor {
 		}
 		
 		for (final Obs obs : allObs) {
+			
+			if (MappedConcepts.DOSING_INSTRUCTIONS.equals(obs.getConcept().getUuid())) {
+				obs.setValueCoded(EntityFactory.gimme(Concept.class, ConceptTemplate.BEFORE_MEALS));
+			}
+			
+			if (MappedConcepts.DURATION_UNITS.equals(obs.getConcept().getUuid())) {
+				obs.setValueCoded(EntityFactory.gimme(Concept.class, ConceptTemplate.WEEKS));
+			}
+			
+			if (MappedConcepts.DOSAGE_AMOUNT.equals(obs.getConcept().getUuid())) {
+				obs.setValueNumeric(2.0);
+			}
+			
 			obs.setObsGroup(convSetObservation);
 		}
 	}

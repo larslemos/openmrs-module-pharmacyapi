@@ -2,6 +2,7 @@ package org.openmrs.module.pharmacyapi.api.adapter;
 
 import static org.openmrs.module.pharmacyapi.api.util.MappedConcepts.DOSAGE_AMOUNT;
 import static org.openmrs.module.pharmacyapi.api.util.MappedConcepts.DOSAGE_FREQUENCY;
+import static org.openmrs.module.pharmacyapi.api.util.MappedConcepts.DOSING_INSTRUCTIONS;
 import static org.openmrs.module.pharmacyapi.api.util.MappedConcepts.DOSING_UNITS;
 import static org.openmrs.module.pharmacyapi.api.util.MappedConcepts.DRUG_ROUTES;
 import static org.openmrs.module.pharmacyapi.api.util.MappedConcepts.DURATION;
@@ -22,6 +23,7 @@ import org.openmrs.Order;
 import org.openmrs.OrderFrequency;
 import org.openmrs.Patient;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.pharmacyapi.api.util.MappedDurationUnits;
 
 public class ObsOrderAdapter extends BaseOpenmrsService {
 	
@@ -94,6 +96,11 @@ public class ObsOrderAdapter extends BaseOpenmrsService {
 					continue;
 				}
 				
+				if (DOSING_INSTRUCTIONS.equals(observation.getConcept().getUuid())) {
+					order.setDosingInstructions(observation.getValueCoded().getUuid());
+					continue;
+				}
+				
 				if (PREVIOUS_ANTIRETROVIRAL_DRUGS.equals(observation.getConcept().getUuid())) {
 					final Drug drug = new Drug();
 					drug.setConcept(observation.getValueCoded());
@@ -109,10 +116,10 @@ public class ObsOrderAdapter extends BaseOpenmrsService {
 			}
 		}
 		
-		order.setQuantity(0.0);
+		order.setQuantity(this.calculateDrugQuantity(order));
 		order.setNumRefills(0);
 		
-		// workaroung to link the obs module to order
+		// workaround to link the obs module to order
 		order.setCommentToFulfiller(convSetObservation.getUuid());
 		
 		return order;
@@ -129,5 +136,11 @@ public class ObsOrderAdapter extends BaseOpenmrsService {
 	
 	private boolean isConSetObs(final Obs obs) {
 		return TREATMENT_PRESCRIBED_SET.equals(obs.getConcept().getUuid());
+	}
+	
+	public Double calculateDrugQuantity(final DrugOrder drugOrder) {
+		final int durationUnitsDays = MappedDurationUnits.getDurationDays(drugOrder.getDurationUnits().getUuid());
+		
+		return drugOrder.getDose() * drugOrder.getDuration() * durationUnitsDays;
 	}
 }
