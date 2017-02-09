@@ -24,4 +24,8 @@ public class EntityFactory {
 	public static <T> List<T> gimme(final Class<T> clazz, final int elements, final String... labels) {
 		return Fixture.from(clazz).gimme(elements, labels);
 	}
+	
+	public static <T> List<T> gimme(final Class<T> clazz, final int elements, final String label) {
+		return Fixture.from(clazz).gimme(elements, label);
+	}
 }

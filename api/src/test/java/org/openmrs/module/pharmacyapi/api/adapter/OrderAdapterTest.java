@@ -10,11 +10,13 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.module.pharmacyapi.api.templates.EncounterProcessor;
 import org.openmrs.module.pharmacyapi.api.templates.EncounterTemplate;
+import org.openmrs.module.pharmacyapi.api.templates.OrderTemplate;
 import org.openmrs.module.pharmacyapi.api.templates.PatientTemplate;
 import org.openmrs.module.pharmacyapi.api.util.BaseTest;
 import org.openmrs.module.pharmacyapi.api.util.EntityFactory;
@@ -46,5 +48,14 @@ public class OrderAdapterTest extends BaseTest {
 		assertFalse(orders.isEmpty());
 		
 		assertEquals(1, orders.size());
+	}
+	
+	@Test
+	public void shouldCalculateDrugQuantity() {
+		final DrugOrder drugOrder = EntityFactory.gimme(DrugOrder.class, OrderTemplate.DRUG_ORDER);
+		
+		final Double quantity = this.orderAdapter.calculateDrugQuantity(drugOrder);
+		
+		assertEquals(7, quantity, 0);
 	}
 }

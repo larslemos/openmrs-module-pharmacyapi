@@ -1,12 +1,12 @@
 package org.openmrs.module.pharmacyapi.web.resource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacyapi.model.Prescription;
+import org.openmrs.module.pharmacyapi.api.model.Prescription;
+import org.openmrs.module.pharmacyapi.api.service.PrescriptionService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -22,6 +22,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+/**
+ * @author Stélio Moiane
+ */
 @Resource(name = RestConstants.VERSION_1 + "/prescription", order = 1, supportedClass = Prescription.class, supportedOpenmrsVersions = {
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
 public class PrescriptionResource extends DataDelegatingCrudResource<Prescription> {
@@ -33,12 +36,24 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("order");
+			description.addProperty("dosingInstructions");
+			description.addProperty("provider");
+			description.addProperty("prescriptionDate");
+			description.addProperty("conceptParentUuid");
+			description.addProperty("drugToPickUp");
+			description.addProperty("drugPickedUp");
 			description.addSelfLink();
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("order");
+			description.addProperty("dosingInstructions");
+			description.addProperty("provider");
+			description.addProperty("prescriptionDate");
+			description.addProperty("conceptParentUuid");
+			description.addProperty("drugToPickUp");
+			description.addProperty("drugPickedUp");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -46,6 +61,12 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("order");
+			description.addProperty("dosingInstructions");
+			description.addProperty("provider");
+			description.addProperty("prescriptionDate");
+			description.addProperty("conceptParentUuid");
+			description.addProperty("drugToPickUp");
+			description.addProperty("drugPickedUp");
 			description.addSelfLink();
 			return description;
 		} else {
@@ -95,17 +116,9 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 			return new EmptySearchResult();
 		}
 		
-		final List<Order> orders = Context.getOrderService().getActiveOrders(patient, null, null, null);
+		final PrescriptionService prescriptionService = Context.getService(PrescriptionService.class);
+		final List<Prescription> prescriptions = prescriptionService.findPrescriptionsByPatient(patient);
 		
-		return new NeedsPaging<Prescription>(this.getPrescritions(orders), context);
-	}
-	
-	private List<Prescription> getPrescritions(final List<Order> orders) {
-		final List<Prescription> prescriptions = new ArrayList<>();
-
-		for (final Order order : orders) {
-			prescriptions.add(new Prescription(order));
-		}
-		return prescriptions;
+		return new NeedsPaging<Prescription>(prescriptions, context);
 	}
 }
