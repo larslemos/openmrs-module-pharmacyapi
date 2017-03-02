@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openmrs.module.pharmacyapi.model;
+package org.openmrs.module.pharmacyapi.api.model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +12,6 @@ import org.openmrs.Drug;
 
 /**
  * @author Guimino Neves
- *
  */
 public class DrugGroup extends BaseOpenmrsData implements Serializable {
 
@@ -21,7 +20,8 @@ public class DrugGroup extends BaseOpenmrsData implements Serializable {
 	// Fields
 	@DocumentId
 	private Integer drugGroupId;
-	List<Drug> drugs;
+
+	List<Drug> members;
 
 	@Override
 	public Integer getId() {
@@ -35,11 +35,12 @@ public class DrugGroup extends BaseOpenmrsData implements Serializable {
 		this.drugGroupId = drugGroupId;
 	}
 
-	public List<Drug> getDrugs() {
-		return drugs;
+	public List<Drug> getMembers() {
+		return members;
 	}
 
-	public void setDrugs(List<Drug> drugs) {
-		this.drugs = drugs;
+	public void setMembers(List<Drug> members) {
+		this.members = members;
 	}
+
 }
