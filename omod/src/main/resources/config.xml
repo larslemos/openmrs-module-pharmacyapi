@@ -37,7 +37,7 @@
 
 
 	<advice>
-		<point>org.openmrs.api.OrderService</point>
+		<point>org.openmrs.module.pharmacyapi.api.service.PrescriptionService</point>
 		<class>org.openmrs.module.pharmacyapi.advice.ParseObsToOrderAdvice</class>
 	</advice>
 

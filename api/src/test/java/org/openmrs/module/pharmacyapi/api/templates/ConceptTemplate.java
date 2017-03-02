@@ -4,6 +4,7 @@
 package org.openmrs.module.pharmacyapi.api.templates;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.module.pharmacyapi.api.util.BaseTemplateLoader;
 
 import br.com.six2six.fixturefactory.Fixture;
@@ -41,6 +42,14 @@ public class ConceptTemplate implements BaseTemplateLoader {
 	public static final String DOSING_INSTRUCTIONS = "DOSING_INSTRUCTIONS";
 	
 	public static final String POC_MAPPING_PRESCRIPTION_DATE = "POC_MAPPING_PRESCRIPTION_DATE";
+	
+	public static final String BEFORE_MEALS = "BEFORE_MEALS";
+	
+	public static final String WEEKS = "WEEKS";
+	
+	public static final String MEDICATION_QUANTITY = "MEDICATION_QUANTITY";
+	
+	public static final String AZT_3TC_NVP = "AZT_3TC_NVP";
 	
 	@Override
 	public void load() {
@@ -154,6 +163,39 @@ public class ConceptTemplate implements BaseTemplateLoader {
 			{
 				this.add("conceptId", 6485);
 				this.add("uuid", "488e6803-c7db-43b2-8911-8d5d2a8472fd");
+			}
+		});
+		
+		Fixture.of(Concept.class).addTemplate(BEFORE_MEALS, new Rule() {
+			
+			{
+				this.add("conceptId", 6415);
+				this.add("uuid", "9d7408af-10e8-11e5-9009-0242ac110012");
+				this.add("names", this.has(1).of(ConceptName.class, ConceptNameTemplate.BEFORE_MEALS));
+			}
+		});
+		
+		Fixture.of(Concept.class).addTemplate(WEEKS, new Rule() {
+			
+			{
+				this.add("conceptId", 6483);
+				this.add("uuid", "9d96489b-10e8-11e5-9009-0242ac110012");
+			}
+		});
+		
+		Fixture.of(Concept.class).addTemplate(MEDICATION_QUANTITY, new Rule() {
+			
+			{
+				this.add("conceptId", 1715);
+				this.add("uuid", "e1de2ca0-1d5f-11e0-b929-000c29ad1d07");
+			}
+		});
+		
+		Fixture.of(Concept.class).addTemplate(AZT_3TC_NVP, new Rule() {
+			
+			{
+				this.add("conceptId", 1651);
+				this.add("uuid", "e1dd2f44-1d5f-11e0-b929-000c29ad1d07");
 			}
 		});
 	}

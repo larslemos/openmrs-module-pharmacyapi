@@ -11,16 +11,15 @@
 	<packaging>jar</packaging>
 	<name>OpenMRS Pharmacy Module API</name>
 	<description>API project for OpenMRS Pharmacy Module</description>
-
+  
 	<dependencies>
+    
 		<dependency>
 			<groupId>br.com.six2six</groupId>
 			<artifactId>fixture-factory</artifactId>
 			<version>3.1.0</version>
 		</dependency>
-		
-		
-		
+    
 	</dependencies>
 
 </project>

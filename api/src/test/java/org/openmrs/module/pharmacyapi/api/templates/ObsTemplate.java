@@ -47,6 +47,8 @@ public class ObsTemplate implements BaseTemplateLoader {
 	
 	public static final String POC_MAPPING_PRESCRIPTION_DATE = "POC_MAPPING_PRESCRIPTION_DATE";
 	
+	public static final String MEDICATION_QUANTITY = "MEDICATION_QUANTITY";
+	
 	@Override
 	public void load() {
 		
@@ -167,6 +169,15 @@ public class ObsTemplate implements BaseTemplateLoader {
 			{
 				this.add("uuid", UUID.randomUUID().toString().replace("-", ""));
 				this.add("concept", this.one(Concept.class, ConceptTemplate.POC_MAPPING_PRESCRIPTION_DATE));
+			}
+		});
+		
+		Fixture.of(Obs.class).addTemplate(MEDICATION_QUANTITY).inherits(VALID, new Rule() {
+			
+			{
+				this.add("uuid", UUID.randomUUID().toString().replace("-", ""));
+				this.add("concept", this.one(Concept.class, ConceptTemplate.MEDICATION_QUANTITY));
+				this.add("valueNumeric", 10.0);
 			}
 		});
 	}
