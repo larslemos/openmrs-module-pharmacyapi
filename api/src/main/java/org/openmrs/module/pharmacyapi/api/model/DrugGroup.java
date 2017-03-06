@@ -2,6 +2,7 @@
  * 
  */
 package org.openmrs.module.pharmacyapi.api.model;
+package org.openmrs.module.pharmacyapi.model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.openmrs.Drug;
 
 /**
  * @author Guimino Neves
+ *
  */
 public class DrugGroup extends BaseOpenmrsData implements Serializable {
 
