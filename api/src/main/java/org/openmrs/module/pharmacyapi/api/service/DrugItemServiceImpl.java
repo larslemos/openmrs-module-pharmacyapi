@@ -5,12 +5,18 @@
  */
 package org.openmrs.module.pharmacyapi.api.service;
 
-import org.openmrs.api.impl.BaseOpenmrsService;
-
 /**
  * @author Guimino Neves
  */
-public class DrugItemServiceImpl extends BaseOpenmrsService  implements DrugItemService {
+public class DrugItemServiceImpl implements DrugItemService {
 	
+	@Override
+	public void onShutdown() {
+		
+	}
 	
+	@Override
+	public void onStartup() {
+		
+	}
 }

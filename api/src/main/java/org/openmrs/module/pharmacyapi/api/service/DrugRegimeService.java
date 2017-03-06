@@ -11,5 +11,5 @@ import org.openmrs.api.OpenmrsService;
  * @author Guimino Neves
  */
 public interface DrugRegimeService extends OpenmrsService {
-
+	
 }
