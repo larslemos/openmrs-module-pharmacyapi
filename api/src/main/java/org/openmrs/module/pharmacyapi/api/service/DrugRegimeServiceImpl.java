@@ -5,25 +5,18 @@
  */
 package org.openmrs.module.pharmacyapi.api.service;
 
-import org.openmrs.api.impl.BaseOpenmrsService;
-
 /**
  * @author Guimino Neves
- *
  */
-public class DrugRegimeServiceImpl extends BaseObjectDataServiceImpl<DrugRegime, BasicObjectAuthorizationPrivileges>
-		implements IDrugRegimeService {
-
+public class DrugRegimeServiceImpl implements DrugRegimeService {
+	
 	@Override
-	protected BasicObjectAuthorizationPrivileges getPrivileges() {
-
-		return new BasicObjectAuthorizationPrivileges();
+	public void onShutdown() {
+		
 	}
-
+	
 	@Override
-	protected void validate(DrugRegime object) {
-		// TODO Auto-generated method stub
-
+	public void onStartup() {
+		
 	}
-
 }

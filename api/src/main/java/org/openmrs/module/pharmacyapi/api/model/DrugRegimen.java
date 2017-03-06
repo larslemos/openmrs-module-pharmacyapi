@@ -3,7 +3,6 @@
  */
 package org.openmrs.module.pharmacyapi.api.model;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.openmrs.BaseOpenmrsData;
@@ -12,11 +11,9 @@ import org.openmrs.Drug;
 /**
  * @author Guimino Neves
  */
-public class DrugRegime extends BaseOpenmrsData implements Serializable {
+public class DrugRegimen extends BaseOpenmrsData {
 	
-	private static final long serialVersionUID = 3987735186616581228L;
-	
-	private Integer drugRegimeId;
+	private Integer drugRegimenId;
 	
 	private Drug drug;
 	
@@ -25,27 +22,27 @@ public class DrugRegime extends BaseOpenmrsData implements Serializable {
 	@Override
 	public Integer getId() {
 		
-		return this.drugRegimeId;
+		return this.drugRegimenId;
 	}
 	
 	@Override
-	public void setId(Integer drugRegimeId) {
-		this.drugRegimeId = drugRegimeId;
+	public void setId(final Integer drugRegimenId) {
+		this.drugRegimenId = drugRegimenId;
 	}
 	
 	public Drug getDrug() {
-		return drug;
+		return this.drug;
 	}
 	
-	public void setDrug(Drug drug) {
+	public void setDrug(final Drug drug) {
 		this.drug = drug;
 	}
 	
 	public List<DrugGroup> getDrugGroups() {
-		return drugGroups;
+		return this.drugGroups;
 	}
 	
-	public void setDrugGroups(List<DrugGroup> drugGroups) {
+	public void setDrugGroups(final List<DrugGroup> drugGroups) {
 		this.drugGroups = drugGroups;
 	}
 }

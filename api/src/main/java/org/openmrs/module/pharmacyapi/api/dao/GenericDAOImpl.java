@@ -5,19 +5,22 @@ package org.openmrs.module.pharmacyapi.api.dao;
 
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Stélio Moiane
  */
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	
-	@Autowired
-	DbSessionFactory sessionFactory;
+	private DbSessionFactory sessionFactory;
 	
 	@Override
 	public DbSession getSession() {
 		return this.sessionFactory.getCurrentSession();
+	}
+	
+	@Override
+	public void setSession(final DbSessionFactory dbSessionFactory) {
+		this.sessionFactory = dbSessionFactory;
 	}
 	
 	@Override

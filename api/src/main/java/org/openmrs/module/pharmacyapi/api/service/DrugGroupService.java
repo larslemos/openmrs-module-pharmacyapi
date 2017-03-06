@@ -9,6 +9,6 @@ import org.openmrs.api.OpenmrsService;
  * @author Guimino Neves
  */
 public interface DrugGroupService extends OpenmrsService {
-
+	
 	String NAME = "org.openmrs.module.pharmacyapi.api.service.IDrugGroupService";
 }

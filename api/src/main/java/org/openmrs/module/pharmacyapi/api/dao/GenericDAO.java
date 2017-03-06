@@ -4,6 +4,7 @@
 package org.openmrs.module.pharmacyapi.api.dao;
 
 import org.openmrs.api.db.hibernate.DbSession;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 
 /**
  * @author Stélio Moiane
@@ -11,6 +12,8 @@ import org.openmrs.api.db.hibernate.DbSession;
 public interface GenericDAO<T> {
 	
 	DbSession getSession();
+	
+	void setSession(DbSessionFactory dbSessionFactory);
 	
 	T save(T entity);
 }

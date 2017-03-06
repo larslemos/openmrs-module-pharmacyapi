@@ -11,28 +11,28 @@ import org.openmrs.api.db.hibernate.DbSessionFactory;
  */
 public class DbSessionManagerImpl implements DbSessionManager {
 	
-	private DbSessionFactory sessionFactory;
+	private DbSessionFactory dbSessionFactory;
 	
 	private FlushMode currentFlushMode;
 	
 	@Override
 	public FlushMode getCurrentFlushMode() {
-		return this.sessionFactory.getCurrentSession().getFlushMode();
+		return this.dbSessionFactory.getCurrentSession().getFlushMode();
 	}
 	
 	@Override
 	public void setManualFlushMode() {
 		this.currentFlushMode = this.getCurrentFlushMode();
-		this.sessionFactory.getCurrentSession().setFlushMode(FlushMode.MANUAL);
+		this.dbSessionFactory.getCurrentSession().setFlushMode(FlushMode.MANUAL);
 	}
 	
 	@Override
 	public void setFlushMode(final FlushMode flushMode) {
-		this.sessionFactory.getCurrentSession().setFlushMode(flushMode);
+		this.dbSessionFactory.getCurrentSession().setFlushMode(flushMode);
 	}
 	
 	public void setSessionFactory(final DbSessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
+		this.dbSessionFactory = sessionFactory;
 	}
 	
 	@Override

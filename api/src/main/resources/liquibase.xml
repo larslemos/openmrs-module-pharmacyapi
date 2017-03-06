@@ -1,39 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
- 
+
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
- 
-    <!--
-    	See http://wiki.openmrs.org/display/docs/Module+liquibase+File for 
-    	documentation on this file.
-    
-        See http://www.liquibase.org/manual/home#available_database_refactorings
-        for a list of supported elements and attributes
-    -->
- 
- 	<!-- Uncomment the changeset below if you want to make the Item class persistable, see also Item and OpenMRSPharmacyModuleDaoTest -->
- 	<!--
-	<changeSet id="pharmacyapi-2016-08-02-12-21" author="raff">
+
+	<!-- See http://wiki.openmrs.org/display/docs/Module+liquibase+File for 
+		documentation on this file. See http://www.liquibase.org/manual/home#available_database_refactorings 
+		for a list of supported elements and attributes -->
+
+	<changeSet id="pharmacyapi-2016-08-02-12-21" author="steliomo">
+
 		<preConditions onFail="MARK_RAN">
-			<not><tableExists tableName="pharmacyapi_item"/></not>
+			<not>
+				<tableExists tableName="phm_drug_items" />
+			</not>
 		</preConditions>
+
 		<comment>
-			Creating the pharmacyapi_item table
+			Creating the pharmacyapi_drug_items table
 		</comment>
-		<createTable tableName="pharmacyapi_item">
-			<column name="pharmacyapi_item_id" type="int" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false"/>
+
+		<createTable tableName="phm_drug_items">
+
+			<column name="drug_item_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
 			</column>
+
 			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true"></constraints>
+				<constraints nullable="false" unique="true" />
 			</column>
-			<column name="owner" type="int" />
-			<column name="description" type="varchar(255)" />
+
+			<column name="drug_id" type="int">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="item_id" type="int">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="drug_units_id" type="int">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="drug_unit_value" type="double">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="bar_code" type="varchar(100)" />
+
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+
 		</createTable>
-        <addForeignKeyConstraint constraintName="pharmacyapi_item_owner_fk" baseTableName="pharmacyapi_item" baseColumnNames="owner"  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
-    </changeSet> -->
- 
+
+	</changeSet>
+
 </databaseChangeLog>
