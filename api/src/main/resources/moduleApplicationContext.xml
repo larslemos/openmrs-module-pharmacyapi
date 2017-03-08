@@ -111,7 +111,7 @@
 	</bean>
 	
 	<bean id="dbSessionManager" class="org.openmrs.module.pharmacyapi.db.DbSessionManagerImpl">
-        <property name="dbSessionFactory"><ref bean="dbSessionFactory"/></property>
-    </bean>
+        <property name="sessionFactory"><ref bean="dbSessionFactory"/></property>
+    </bean>    
     
 </beans>

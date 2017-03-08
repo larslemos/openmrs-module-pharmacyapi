@@ -68,6 +68,11 @@
 	<!-- /Servlets -->
 
 
+	<!-- Maps hibernate file's, if present -->
+	<mappingFiles>
+		PhmDrug.hbm.xml
+	</mappingFiles>
+
 	<!-- Internationalization -->
 	<!-- All message codes should start with @MODULE_ID@.* -->
 	<messages>

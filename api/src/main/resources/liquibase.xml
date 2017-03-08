@@ -9,7 +9,10 @@
 		documentation on this file. See http://www.liquibase.org/manual/home#available_database_refactorings 
 		for a list of supported elements and attributes -->
 
-	<changeSet id="pharmacyapi-2016-08-02-12-21" author="steliomo">
+	<changeSet id="pharmacyapi-v1.0.0" author="steliomo">
+
+		<validCheckSum>359b735227ecd08421f0524edc8020fe</validCheckSum> <!-- old checksum without specifying date_created -->
+		<validCheckSum>a4b610eb71e47ef228bb0e09e9c55384</validCheckSum> <!-- current checksum with date_created property added -->
 
 		<preConditions onFail="MARK_RAN">
 			<not>
@@ -68,6 +71,30 @@
 			<column name="retire_reason" type="varchar(255)" />
 
 		</createTable>
+
+		<addForeignKeyConstraint constraintName="phm_drug_items_drug_fk"
+			baseTableName="phm_drug_items" baseColumnNames="drug_id"
+			referencedTableName="drug" referencedColumnNames="drug_id" />
+
+		<addForeignKeyConstraint constraintName="phm_drug_items_item_fk"
+			baseTableName="phm_drug_items" baseColumnNames="item_id"
+			referencedTableName="inv_item" referencedColumnNames="item_id" />
+
+		<addForeignKeyConstraint constraintName="phm_drug_items_drug_unit_fk"
+			baseTableName="phm_drug_items" baseColumnNames="drug_units_id"
+			referencedTableName="concept" referencedColumnNames="concept_id" />
+
+		<addForeignKeyConstraint constraintName="phm_drug_items_creator_fk"
+			baseTableName="phm_drug_items" baseColumnNames="creator"
+			referencedTableName="users" referencedColumnNames="user_id" />
+
+		<addForeignKeyConstraint constraintName="phm_drug_items_changed_by_fk"
+			baseTableName="phm_drug_items" baseColumnNames="changed_by"
+			referencedTableName="users" referencedColumnNames="user_id" />
+
+		<addForeignKeyConstraint constraintName="phm_drug_items_retired_by_fk"
+			baseTableName="phm_drug_items" baseColumnNames="retired_by"
+			referencedTableName="users" referencedColumnNames="user_id" />
 
 	</changeSet>
 

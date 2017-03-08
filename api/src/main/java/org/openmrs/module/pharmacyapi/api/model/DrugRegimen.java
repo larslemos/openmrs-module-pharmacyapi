@@ -5,13 +5,13 @@ package org.openmrs.module.pharmacyapi.api.model;
 
 import java.util.List;
 
-import org.openmrs.BaseOpenmrsData;
+import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Drug;
 
 /**
  * @author Guimino Neves
  */
-public class DrugRegimen extends BaseOpenmrsData {
+public class DrugRegimen extends BaseOpenmrsMetadata {
 	
 	private Integer drugRegimenId;
 	
@@ -21,7 +21,6 @@ public class DrugRegimen extends BaseOpenmrsData {
 	
 	@Override
 	public Integer getId() {
-		
 		return this.drugRegimenId;
 	}
 	
