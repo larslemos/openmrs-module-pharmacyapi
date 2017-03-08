@@ -3,16 +3,7 @@
  */
 package org.openmrs.module.pharmacyapi.api.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import org.openmrs.BaseOpenmrsData;
+import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.module.openhmis.inventory.api.model.Item;
@@ -20,36 +11,22 @@ import org.openmrs.module.openhmis.inventory.api.model.Item;
 /**
  * @author Guimino Neves
  */
-@Entity
-@Table(name = "phm_drug_items")
-public class DrugItem extends BaseOpenmrsData {
+public class DrugItem extends BaseOpenmrsMetadata {
 	
-	@Id
-	@GeneratedValue
-	@Column(name = "drug_item_id", nullable = false)
 	private Integer drugItemId;
 	
-	@OneToOne
-	@JoinColumn(name = "drug_id", nullable = false)
 	private Drug drug;
 	
-	@OneToOne
-	@JoinColumn(name = "item_id", nullable = false)
 	private Item item;
 	
-	@ManyToOne
-	@JoinColumn(name = "drug_units_id", nullable = false)
 	private Concept drugUnits;
 	
-	@Column(name = "drug_unit_value", nullable = false)
 	private Double drugUnitValue;
 	
-	@Column(name = "bar_code", length = 100)
 	private String barCode;
 	
 	@Override
 	public Integer getId() {
-		
 		return this.drugItemId;
 	}
 	
