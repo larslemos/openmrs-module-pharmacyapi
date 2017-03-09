@@ -18,9 +18,10 @@
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
 
 	<scm>
-		<connection>scm:git:git@github.com:openmrs/openmrs-module-pharmacyapi.git</connection>
-		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-pharmacyapi.git</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-pharmacyapi/</url>
+		<connection>scm:git:https://github.com/esaude/openmrs-module-pharmacyapi.git</connection>
+		<developerConnection>scm:git:https://github.com/esaude/openmrs-module-pharmacyapi.git</developerConnection>
+		<url>https://github.com/esaude/openmrs-module-pharmacyapi</url>
+		<tag>HEAD</tag>
 	</scm>
 
 	<modules>
