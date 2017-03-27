@@ -5,8 +5,12 @@ package org.openmrs.module.pharmacyapi.api.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.CareSetting;
 import org.openmrs.Concept;
 import org.openmrs.ConceptSearchResult;
@@ -20,19 +24,23 @@ import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacyapi.api.adapter.ObsOrderAdapter;
+import org.openmrs.module.pharmacyapi.api.model.DrugItem;
 import org.openmrs.module.pharmacyapi.api.model.Prescription;
 import org.openmrs.module.pharmacyapi.api.util.MappedConcepts;
 import org.openmrs.module.pharmacyapi.api.util.MappedOrders;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Stélio Moiane
  */
+@Transactional
 public class PrescriptionServiceImpl extends BaseOpenmrsService implements PrescriptionService {
 	
 	private ObsOrderAdapter obsOrderAdapter;
@@ -40,6 +48,10 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 	private OrderService orderService;
 	
 	private ConceptService conceptService;
+	
+	private DrugItemService drugItemService;
+	
+	protected final Log log = LogFactory.getLog(this.getClass());
 	
 	@Override
 	public void parseObsToOrders(final Patient patient) throws APIException {
@@ -140,8 +152,43 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 		this.conceptService = conceptService;
 	}
 	
+	DrugItem createDrugItem() {
+		
+		final String uuID = UUID.randomUUID().toString();
+		final DrugItem drugItem = new DrugItem();
+		
+		final Concept concept = new Concept(796);
+		final User user = new User(271);
+		final Drug drug = new Drug(10);
+		drug.setConcept(concept);
+		
+		drugItem.setDrug(drug);
+		
+		drugItem.setBarCode("111222333");
+		drugItem.setRetired(false);
+		drugItem.setCreator(user);
+		drugItem.setDateCreated(Calendar.getInstance().getTime());
+		drugItem.setDrugUnitValue(20d);
+		drugItem.setDrugUnits(concept);
+		drugItem.setDrug(drug);
+		drugItem.setUuid(uuID);
+		
+		return drugItem;
+	}
+	
 	@Override
 	public List<Prescription> findPrescriptionsByPatient(final Patient patient) throws APIException {
+
+		try {
+			this.log.info("Trying to create a Drug Item");
+
+			this.drugItemService.save(this.createDrugItem());
+
+			this.log.info("Created");
+		} catch (final Exception e) {
+
+			this.log.error("Error Creating a DrugItems", e);
+		}
 
 		final List<Prescription> prescriptions = new ArrayList<>();
 
@@ -213,4 +260,13 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 		return MappedConcepts.MEDICATION_QUANTITY.equals(observation.getConcept().getUuid())
 		        && order.getConcept().getUuid().equals(observation.getOrder().getConcept().getUuid());
 	}
+	
+	/**
+	 * @param drugItemService the drugItemService to set
+	 */
+	@Override
+	public void setDrugItemService(final DrugItemService drugItemService) {
+		this.drugItemService = drugItemService;
+	}
+	
 }
