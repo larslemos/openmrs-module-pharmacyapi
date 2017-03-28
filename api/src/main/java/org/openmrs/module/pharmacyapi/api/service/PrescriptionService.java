@@ -30,6 +30,4 @@ public interface PrescriptionService extends OpenmrsService {
 	
 	Double calculateDrugPikckedUp(final DrugOrder order) throws APIException;
 	
-	void setDrugItemService(final DrugItemService drugItemService);
-	
 }

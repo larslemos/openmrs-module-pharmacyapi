@@ -40,11 +40,7 @@
 				<property name="conceptService">
 					<ref bean="conceptService" />
 				</property>
-				
-				<property name="drugItemService">
-					<ref bean="drugItemService" />
-				</property>
-				
+								
 			</bean>
 		</property>
 		<property name="preInterceptors">
@@ -120,6 +116,48 @@
 			<ref bean="transactionAttributeSource" />
 		</property>
 	</bean>
+	
+	<bean id="supplierService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<bean
+				class="org.openmrs.module.pharmacyapi.api.model.SupplierServiceImpl">
+				<property name="sessionFactory">
+					<ref bean="dbSessionFactory" />
+				</property>
+			</bean>
+		</property>
+		<property name="preInterceptors">
+			<ref bean="serviceInterceptors" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributeSource" />
+		</property>
+	</bean>
+	
+	<bean id="drugMeasureUnitService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<bean
+				class="org.openmrs.module.pharmacyapi.api.service.stock.DrugMeasureUnitServiceImpl">
+				<property name="sessionFactory">
+					<ref bean="dbSessionFactory" />
+				</property>
+			</bean>
+		</property>
+		<property name="preInterceptors">
+			<ref bean="serviceInterceptors" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributeSource" />
+		</property>
+	</bean>
 
 	<bean parent="serviceContext">
 		<property name="moduleService">
@@ -145,6 +183,24 @@
 			<list merge="true">
 				<value>org.openmrs.module.pharmacyapi.api.service.DrugItemService</value>
 				<ref local="drugItemService" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.pharmacyapi.api.model.SupplierService</value>
+				<ref local="supplierService" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list merge="true">
+				<value>org.openmrs.module.pharmacyapi.api.service.stock.DrugMeasureUnitService</value>
+				<ref local="drugMeasureUnitService" />
 			</list>
 		</property>
 	</bean>

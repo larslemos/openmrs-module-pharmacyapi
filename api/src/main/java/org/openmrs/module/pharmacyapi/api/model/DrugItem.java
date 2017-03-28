@@ -1,7 +1,7 @@
 /**
- * 
+ *
  *  UCSF -Global Programs 2017
- *  
+ *
  */
 package org.openmrs.module.pharmacyapi.api.model;
 
@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
@@ -85,5 +86,21 @@ public class DrugItem extends BaseOpenmrsMetadata implements Serializable {
 
 	public Set<DrugMeasureUnit> getMeasureUnits() {
 		return this.measureUnits;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (obj instanceof DrugItem) {
+			final DrugItem other = (DrugItem) obj;
+			return new EqualsBuilder().append(this.getDrug(), other.getDrug())
+					.append(this.getDrugUnits(), other.getDrugUnits()).isEquals();
+		}
+
+		return false;
 	}
 }

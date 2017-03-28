@@ -11,9 +11,6 @@
 
 	<changeSet id="pharmacyapi-v1.0.0" author="steliomo">
 
-		<validCheckSum>359b735227ecd08421f0524edc8020fe</validCheckSum> <!-- old checksum without specifying date_created -->
-		<validCheckSum>a4b610eb71e47ef228bb0e09e9c55384</validCheckSum> <!-- current checksum with date_created property added -->
-
 		<preConditions onFail="MARK_RAN">
 			<not>
 				<tableExists tableName="phm_drug_items" />
@@ -72,10 +69,6 @@
 			baseTableName="phm_drug_items" baseColumnNames="drug_id"
 			referencedTableName="drug" referencedColumnNames="drug_id" />
 
-		<addForeignKeyConstraint constraintName="phm_drug_items_item_fk"
-			baseTableName="phm_drug_items" baseColumnNames="item_id"
-			referencedTableName="inv_item" referencedColumnNames="item_id" />
-
 		<addForeignKeyConstraint constraintName="phm_drug_items_drug_unit_fk"
 			baseTableName="phm_drug_items" baseColumnNames="drug_units_id"
 			referencedTableName="concept" referencedColumnNames="concept_id" />
@@ -114,16 +107,10 @@
 			<column name="description" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="reception_date" type="datetime">
-				<constraints nullable="false" />
-			</column>
-			<column name="provenance_id" type="int">
-				<constraints nullable="false" />
-			</column>
 			<column name="drug_item_id" type="int">
 				<constraints nullable="false" />
 			</column>
-			<column name="measure_unit_id" type="int">
+			<column name="drug_measure_unit_id" type="int">
 				<constraints nullable="false" />
 			</column>
 			<column name="expiration_date" type="DATETIME">
@@ -225,6 +212,12 @@
 			<column name="location_id" type="int">
 				<constraints nullable="false" />
 			</column>
+			<column name="reception_date" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="provenance_id" type="int">
+				<constraints nullable="false" />
+			</column>
 			<column name="creator" type="int" defaultValueNumeric="0">
 				<constraints nullable="false" />
 			</column>
@@ -256,17 +249,13 @@
 			baseTableName="phm_lot" baseColumnNames="retired_by"
 			referencedTableName="users" referencedColumnNames="user_id"
 			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_lot_provenance_fk"
-			baseTableName="phm_lot" baseColumnNames="provenance_id"
-			referencedTableName="phm_supplier" referencedColumnNames="supplier_id"
-			deferrable="false" initiallyDeferred="false" />
 		<addForeignKeyConstraint constraintName="phm_lot_drug_item_fk"
-			baseTableName="phm_stock_entry" baseColumnNames="drug_item_id"
-			referencedTableName="phm_drug_items" referencedColumnNames="phm_drug_item_id"
+			baseTableName="phm_lot" baseColumnNames="drug_item_id"
+			referencedTableName="phm_drug_items" referencedColumnNames="drug_item_id"
 			deferrable="false" initiallyDeferred="false" />
 		<addForeignKeyConstraint constraintName="phm_lot_measure_unit_fk"
-			baseTableName="phm_lot" baseColumnNames="measure_unit_id"
-			referencedTableName="phm_measure_unit" referencedColumnNames="measure_unit_id"
+			baseTableName="phm_lot" baseColumnNames="drug_measure_unit_id"
+			referencedTableName="phm_drug_measure_unit" referencedColumnNames="drug_measure_unit_id"
 			deferrable="false" initiallyDeferred="false" />
 
 		<addForeignKeyConstraint constraintName="phm_supplier_creator_fk"
@@ -281,7 +270,7 @@
 			baseTableName="phm_supplier" baseColumnNames="retired_by"
 			referencedTableName="users" referencedColumnNames="user_id"
 			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_location_fk"
+		<addForeignKeyConstraint constraintName="phm_supplier_location_fk"
 			baseTableName="phm_supplier" baseColumnNames="location_id"
 			referencedTableName="location" referencedColumnNames="location_id"
 			deferrable="false" initiallyDeferred="false" />
@@ -298,13 +287,13 @@
 			baseTableName="phm_drug_measure_unit" baseColumnNames="retired_by"
 			referencedTableName="users" referencedColumnNames="user_id"
 			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_measure_unit_unit_fk"
+		<addForeignKeyConstraint constraintName="phm_drug_measure_unit_unit_fk"
 			baseTableName="phm_drug_measure_unit" baseColumnNames="unit_id"
 			referencedTableName="concept" referencedColumnNames="concept_id"
 			deferrable="false" initiallyDeferred="false" />
 		<addForeignKeyConstraint constraintName="phm_drug_measure_unit_drug_item_fk"
 			baseTableName="phm_drug_measure_unit" baseColumnNames="drug_item_id"
-			referencedTableName="phm_drug_items" referencedColumnNames="phm_drug_item_id"
+			referencedTableName="phm_drug_items" referencedColumnNames="drug_item_id"
 			deferrable="false" initiallyDeferred="false" />
 
 		<addForeignKeyConstraint constraintName="phm_stock_entry_creator_fk"
@@ -326,6 +315,10 @@
 		<addForeignKeyConstraint constraintName="phm_stock_entry_location_fk"
 			baseTableName="phm_stock_entry" baseColumnNames="location_id"
 			referencedTableName="location" referencedColumnNames="location_id"
+			deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint constraintName="phm_stock_entry_provenance_fk"
+			baseTableName="phm_stock_entry" baseColumnNames="provenance_id"
+			referencedTableName="phm_supplier" referencedColumnNames="supplier_id"
 			deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
