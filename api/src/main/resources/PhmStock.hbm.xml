@@ -131,5 +131,30 @@
 			
 	</class>
 	
-	
+		<class name="Dispensation" table="phm_dispensation">
+		<cache usage="read-write" />
+
+		<id name="id" type="int" column="dispensation_id">
+			<generator class="native">
+				<param name="sequence">phm_dispensation_id_seq</param>
+			</generator>
+		</id>
+		
+		<discriminator column="dispensation_id" insert="false" />
+		
+		<property name="quantity" type="java.lang.Double" column="quantity" not-null="true" />
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
+		<property name="dateRetired" type="java.util.Date" column="date_retired" length="19" />
+		<property name="retireReason" type="java.lang.String" column="retire_reason" length="255" />
+		<property name="retired" type="boolean" column="retired" length="1" not-null="true" />
+		<!-- uuid -->
+		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
+			
+		<many-to-one name="order" class="org.openmrs.Order" not-null="true" column="order_id" />
+		<many-to-one name="stockEntry" class="org.openmrs.module.pharmacyapi.api.model.stock.StockEntry" not-null="true" column="stock_entry_id" />
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" column="creator" />
+		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
+			
+	</class>
+		
 </hibernate-mapping>

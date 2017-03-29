@@ -3,7 +3,7 @@
  */
 package org.openmrs.module.pharmacyapi.api.templates;
 
-import org.openmrs.module.pharmacyapi.api.model.Dispensation;
+import org.openmrs.module.pharmacyapi.api.model.DispensationWrapper;
 import org.openmrs.module.pharmacyapi.api.model.DispensationItem;
 import org.openmrs.module.pharmacyapi.api.util.BaseTemplateLoader;
 
@@ -20,7 +20,7 @@ public class DispensationTemplate implements BaseTemplateLoader {
 	@Override
 	public void load() {
 		
-		Fixture.of(Dispensation.class).addTemplate(VALID, new Rule() {
+		Fixture.of(DispensationWrapper.class).addTemplate(VALID, new Rule() {
 			
 			{
 				this.add("providerUuid", "7013d271-1bc2-4a50-bed6-8932044bc18f");

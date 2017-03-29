@@ -237,6 +237,36 @@
 			</column>
 		</createTable>
 
+		<createTable tableName="phm_dispensation">
+			<column name="dispensation_id" autoIncrement="true" type="int">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="order_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="stock_entry_id" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="quantity" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int" defaultValueNumeric="0">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueBoolean="false" name="retired" type="BOOLEAN">
+				<constraints nullable="false" />
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="DATETIME" />
+			<column name="retire_reason" type="varchar(255)" />
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+		</createTable>
+
 		<addForeignKeyConstraint constraintName="phm_lot_creator_fk"
 			baseTableName="phm_lot" baseColumnNames="creator"
 			referencedTableName="users" referencedColumnNames="user_id"
@@ -320,6 +350,25 @@
 			baseTableName="phm_stock_entry" baseColumnNames="provenance_id"
 			referencedTableName="phm_supplier" referencedColumnNames="supplier_id"
 			deferrable="false" initiallyDeferred="false" />
+
+
+		<addForeignKeyConstraint constraintName="phm_dispensation_creator_fk"
+			baseTableName="phm_dispensation" baseColumnNames="creator"
+			referencedTableName="users" referencedColumnNames="user_id"
+			deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint constraintName="phm_dispensation_retired_by_fk"
+			baseTableName="phm_dispensation" baseColumnNames="retired_by"
+			referencedTableName="users" referencedColumnNames="user_id"
+			deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint constraintName="phm_dispensation_stock_entry_fk"
+			baseTableName="phm_dispensation" baseColumnNames="stock_entry_id"
+			referencedTableName="phm_stock_entry" referencedColumnNames="stock_entry_id"
+			deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint constraintName="phm_dispensation_order_fk"
+			baseTableName="phm_dispensation" baseColumnNames="order_id"
+			referencedTableName="orders" referencedColumnNames="order_id"
+			deferrable="false" initiallyDeferred="false" />
+
 	</changeSet>
 
 </databaseChangeLog>

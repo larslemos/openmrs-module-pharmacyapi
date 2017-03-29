@@ -26,7 +26,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacyapi.api.model.Dispensation;
+import org.openmrs.module.pharmacyapi.api.model.DispensationWrapper;
 import org.openmrs.module.pharmacyapi.api.model.DispensationItem;
 import org.openmrs.module.pharmacyapi.api.util.MappedConcepts;
 import org.openmrs.module.pharmacyapi.api.util.MappedEncounters;
@@ -56,7 +56,7 @@ public class DispensationServiceImpl extends BaseOpenmrsService implements Dispe
 	private DbSessionManager dbSessionManager;
 	
 	@Override
-	public Dispensation dispense(final Dispensation dispensation) throws APIException {
+	public DispensationWrapper dispense(final DispensationWrapper dispensation) throws APIException {
 		
 		final Person person = this.personService.getPersonByUuid(dispensation.getProviderUuid());
 		final Collection<Provider> providers = this.providerService.getProvidersByPerson(person);
