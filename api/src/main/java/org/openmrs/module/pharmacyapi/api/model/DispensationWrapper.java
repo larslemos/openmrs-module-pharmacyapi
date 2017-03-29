@@ -24,7 +24,7 @@ public class DispensationWrapper extends BaseOpenmrsData implements Serializable
 	
 	private String locationUuid;
 	
-	private List<DispensationItem> dispensationItems;
+	private List<DispensationWrapperItem> dispensationItems;
 	
 	public DispensationWrapper() {
 		this.dispensationItems = new ArrayList<>();
@@ -56,11 +56,11 @@ public class DispensationWrapper extends BaseOpenmrsData implements Serializable
 		return this.providerUuid;
 	}
 	
-	public List<DispensationItem> getDispensationItems() {
+	public List<DispensationWrapperItem> getDispensationItems() {
 		return this.dispensationItems;
 	}
 	
-	public void setDispensationItems(final List<DispensationItem> dispensationItems) {
+	public void setDispensationItems(final List<DispensationWrapperItem> dispensationItems) {
 		this.dispensationItems = dispensationItems;
 	}
 	

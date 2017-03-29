@@ -4,7 +4,7 @@
 package org.openmrs.module.pharmacyapi.api.templates;
 
 import org.openmrs.module.pharmacyapi.api.model.DispensationWrapper;
-import org.openmrs.module.pharmacyapi.api.model.DispensationItem;
+import org.openmrs.module.pharmacyapi.api.model.DispensationWrapperItem;
 import org.openmrs.module.pharmacyapi.api.util.BaseTemplateLoader;
 
 import br.com.six2six.fixturefactory.Fixture;
@@ -26,7 +26,7 @@ public class DispensationTemplate implements BaseTemplateLoader {
 				this.add("providerUuid", "7013d271-1bc2-4a50-bed6-8932044bc18f");
 				this.add(
 				    "dispensationItems",
-				    this.has(3).of(DispensationItem.class, DispensationItemTemplate.NON_ARV,
+				    this.has(3).of(DispensationWrapperItem.class, DispensationItemTemplate.NON_ARV,
 				        DispensationItemTemplate.NON_ARV, DispensationTemplate.VALID));
 			}
 		});
