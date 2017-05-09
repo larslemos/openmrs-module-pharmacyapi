@@ -6,7 +6,6 @@ package org.openmrs.module.pharmacyapi.api.model;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
-import org.openmrs.module.openhmis.inventory.api.model.Item;
 
 /**
  * @author Guimino Neves
@@ -16,8 +15,6 @@ public class DrugItem extends BaseOpenmrsMetadata {
 	private Integer drugItemId;
 	
 	private Drug drug;
-	
-	private Item item;
 	
 	private Concept drugUnits;
 	
@@ -41,14 +38,6 @@ public class DrugItem extends BaseOpenmrsMetadata {
 	
 	public void setDrug(final Drug drug) {
 		this.drug = drug;
-	}
-	
-	public Item getItem() {
-		return this.item;
-	}
-	
-	public void setItem(final Item item) {
-		this.item = item;
 	}
 	
 	public Integer getDrugItemId() {
