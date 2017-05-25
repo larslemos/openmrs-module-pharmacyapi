@@ -29,10 +29,8 @@ public class DrugRegimeDAOImpl implements DrugRegimeDAO {
 	@Override
 	public List<DrugRegime> findByRegime(final Concept regime, final boolean retired) {
 		
-		final String hql = "select distinct drugRegime from DrugRegime drugRegime join fetch drugRegime.drug join fetch drugRegime.regime where drugRegime.regime =:regime and drugRegime.retired = :retired";
-		
-		final Query query = this.sessionFactory.getCurrentSession().createQuery(hql).setParameter("regime", regime)
-		        .setParameter("retired", retired);
+		final Query query = this.sessionFactory.getCurrentSession().getNamedQuery(DrugRegimeDAO.QUERY_NAME.findByRegime)
+		        .setParameter("regime", regime).setParameter("retired", retired);
 		
 		return query.list();
 	}

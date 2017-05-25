@@ -11,13 +11,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.module.pharmacyapi.api.dao.DrugRegimeDAO;
 
+@NamedQueries(value = { @NamedQuery(name = DrugRegimeDAO.QUERY_NAME.findByRegime, query = DrugRegimeDAO.QUERY.findByRegime) })
 @Entity
-@Table(name = "phm_drug_regime")
+@Table(name = "phm_drug_regime", uniqueConstraints = { @UniqueConstraint(columnNames = { "drug_id", "regime_id" }) })
 public class DrugRegime extends BaseOpenmrsMetadataWrapper implements Serializable {
 	
 	private static final long serialVersionUID = -3770809635357840242L;

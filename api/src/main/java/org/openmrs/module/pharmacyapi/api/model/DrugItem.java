@@ -1,6 +1,5 @@
 /**
  *
- *  UCSF -Global Programs 2017
  *
  */
 package org.openmrs.module.pharmacyapi.api.model;
@@ -8,30 +7,50 @@ package org.openmrs.module.pharmacyapi.api.model;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 
 /**
- * @author Guimino Neves
+ *
  */
-public class DrugItem extends BaseOpenmrsMetadata implements Serializable {
+@Entity
+@Table(name = "phm_drug_items", uniqueConstraints = { @UniqueConstraint(columnNames = { "drug_id" }),
+        @UniqueConstraint(columnNames = { "fnm_code" }) })
+public class DrugItem extends BaseOpenmrsMetadataWrapper implements Serializable {
 	
 	private static final long serialVersionUID = -2778691803288646029L;
 	
+	@Id
+	@GeneratedValue
+	@Column(name = "drug_item_id")
 	private Integer drugItemId;
 	
+	@ManyToOne
+	@JoinColumn(name = "drug_id")
 	private Drug drug;
 	
 	@Column(name = "fnm_code")
 	private String fnmCode;
 	
+	@ManyToOne
+	@JoinColumn(name = "pharmaceutical_form_id")
 	private Concept pharmaceuticalForm;
 	
+	@ManyToOne
+	@JoinColumn(name = "therapeutic_group_id")
 	private Concept therapeuticGroup;
 	
+	@ManyToOne
+	@JoinColumn(name = "therapeutic_class_id")
 	private Concept therapeuticClass;
 	
 	@Override

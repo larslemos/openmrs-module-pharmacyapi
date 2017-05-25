@@ -14,6 +14,16 @@ import org.openmrs.module.pharmacyapi.api.model.DrugRegime;
  */
 public interface DrugRegimeDAO {
 	
+	public interface QUERY_NAME {
+		
+		public static final String findByRegime = "DrugRegime.findByRegime";
+	}
+	
+	public interface QUERY {
+		
+		public static final String findByRegime = "select distinct drugRegime from DrugRegime drugRegime join fetch drugRegime.drug join fetch drugRegime.regime where drugRegime.regime =:regime and drugRegime.retired = :retired";
+	}
+	
 	void setSessionFactory(SessionFactory sessionFactory);
 	
 	List<DrugRegime> findByRegime(Concept regime, boolean retired);
