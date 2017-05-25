@@ -1,47 +1,69 @@
 /**
- *  UCSF -Global Programs 2017
- *  
+ *
  */
 package org.openmrs.module.pharmacyapi.api.model;
 
-import java.util.List;
+import java.io.Serializable;
 
-import org.openmrs.BaseOpenmrsMetadata;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-/**
- * @author Guimino Neves
- */
-public class DrugRegime extends BaseOpenmrsMetadata {
+import org.openmrs.Concept;
+import org.openmrs.Drug;
+
+@Entity
+@Table(name = "phm_drug_regime")
+public class DrugRegime extends BaseOpenmrsMetadataWrapper implements Serializable {
 	
-	private Integer drugRegimenId;
+	private static final long serialVersionUID = -3770809635357840242L;
 	
-	private DrugItem drugItem;
+	@Id
+	@GeneratedValue
+	@Column(name = "drug_regime_id")
+	private Integer drugRegimeId;
 	
-	List<DrugGroup> drugGroups;
+	@ManyToOne
+	@JoinColumn(name = "regime_id")
+	private Concept regime;
+	
+	@ManyToOne
+	@JoinColumn(name = "drug_id")
+	private Drug drug;
+	
+	public DrugRegime() {
+	}
 	
 	@Override
 	public Integer getId() {
-		return this.drugRegimenId;
+		return this.drugRegimeId;
 	}
 	
 	@Override
-	public void setId(final Integer drugRegimenId) {
-		this.drugRegimenId = drugRegimenId;
+	public void setId(final Integer id) {
+		this.drugRegimeId = id;
 	}
 	
-	public DrugItem getDrugItem() {
-		return this.drugItem;
+	public Concept getRegime() {
+		return this.regime;
 	}
 	
-	public void setDrugItem(final DrugItem drugItem) {
-		this.drugItem = drugItem;
+	public void setRegime(final Concept regime) {
+		
+		this.regime = regime;
 	}
 	
-	public List<DrugGroup> getDrugGroups() {
-		return this.drugGroups;
+	public Drug getDrug() {
+		return this.drug;
 	}
 	
-	public void setDrugGroups(final List<DrugGroup> drugGroups) {
-		this.drugGroups = drugGroups;
+	public void setDrug(final Drug drug) {
+		
+		this.drug = drug;
 	}
+	
 }

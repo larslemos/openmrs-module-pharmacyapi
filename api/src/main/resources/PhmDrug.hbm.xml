@@ -17,29 +17,51 @@
 		
 		<discriminator column="drug_item_id" insert="false" />
 
-		<property name="drugUnitValue" type="java.lang.Double" column="drug_unit_value"	not-null="true" />
-		<property name="barCode" type="java.lang.String" column="bar_code" length="100"/>
-
-		<!-- Associations -->
-		<many-to-one name="drug" class="org.openmrs.Drug" column="drug_id" />
-		<many-to-one name="drugUnits" class="org.openmrs.Concept" column="drug_units_id" />
-
-		<!-- bi-directional many-to-one association to User -->
+		<property name="fnmCode" type="java.lang.String" column="fnm_code" not-null="true" unique-key="true"  length="10"/>
+		<many-to-one name="drug" class="org.openmrs.Drug" column="drug_id" not-null="true" unique-key="true" />
+		<many-to-one name="pharmaceuticalForm" class="org.openmrs.Concept" column="pharmaceutical_form_id" not-null="true" />
+		<many-to-one name="therapeuticGroup" class="org.openmrs.Concept" column="therapeutic_group_id" not-null="true" />
+		<many-to-one name="therapeuticClass" class="org.openmrs.Concept" column="therapeutic_class_id" not-null="true" />
+		
+		<!-- Life_cycle_attributes -->
 		<many-to-one name="creator" class="org.openmrs.User" not-null="true" column="creator" />
-		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
-		
 		<many-to-one name="changedBy" class="org.openmrs.User"  column="changed_by" />
-		<property name="dateChanged" type="java.util.Date" column="date_changed" length="19" />
-		
 		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
-		<property name="dateRetired" type="java.util.Date" column="date_retired" length="19" />
 		
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
+		<property name="dateChanged" type="java.util.Date" column="date_changed" length="19" />
+		<property name="dateRetired" type="java.util.Date" column="date_retired" length="19" />
 		<property name="retireReason" type="java.lang.String" column="retire_reason" length="255" />
 		<property name="retired" type="boolean" column="retired" length="1" not-null="true" />
-		
-		<!-- uuid -->
 		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
-			
 	</class>
 	
+	<class name="DrugRegime" table="phm_drug_regime">
+		<cache usage="read-write" />
+
+		<id name="id" type="int" column="drug_regime_id">
+			<generator class="native">
+				<param name="sequence">phm_drug_regime_id_seq</param>
+			</generator>
+		</id>
+		
+		<discriminator column="drug_regime_id" insert="false" />
+		<many-to-one name="drug" class="org.openmrs.Drug" column="drug_id" not-null="true" />
+		<many-to-one name="regime" class="org.openmrs.Drug" column="regime_id" not-null="true"  />
+
+		<!-- Life_cycle_attributes -->
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" column="creator" />
+		<many-to-one name="changedBy" class="org.openmrs.User"  column="changed_by" />
+		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
+		
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
+		<property name="dateChanged" type="java.util.Date" column="date_changed" length="19" />
+		<property name="dateRetired" type="java.util.Date" column="date_retired" length="19" />
+		<property name="retireReason" type="java.lang.String" column="retire_reason" length="255" />
+		<property name="retired" type="boolean" column="retired" length="1" not-null="true" />
+		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
+	</class>
+	
+	
+
 </hibernate-mapping>

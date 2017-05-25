@@ -11,7 +11,9 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.OrderService;
+import org.openmrs.module.pharmacyapi.api.dao.DispensationDAO;
 import org.openmrs.module.pharmacyapi.api.model.Prescription;
+import org.openmrs.module.pharmacyapi.db.DbSessionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -30,4 +32,7 @@ public interface PrescriptionService extends OpenmrsService {
 	
 	Double calculateDrugPikckedUp(final DrugOrder order) throws APIException;
 	
+	void setDispensationDAO(DispensationDAO dispensationDAO);
+	
+	void setDbSessionManager(final DbSessionManager dbSessionManager);
 }

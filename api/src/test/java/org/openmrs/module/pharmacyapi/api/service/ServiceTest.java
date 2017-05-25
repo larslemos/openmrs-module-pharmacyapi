@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.pharmacyapi.api.model.SupplierService;
-import org.openmrs.module.pharmacyapi.api.service.stock.DrugMeasureUnitService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -25,9 +23,7 @@ public class ServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private DrugItemService drugItemService;
 	
-	private DrugMeasureUnitService drugMeasureService;
-	
-	private SupplierService supplierService;
+	private DrugRegimeService drugRegimeService;
 	
 	@Before
 	public void before() throws Exception {
@@ -43,15 +39,12 @@ public class ServiceTest extends BaseModuleContextSensitiveTest {
 		this.dispensationService = Context.getService(DispensationService.class);
 		this.patientService = Context.getService(PatientService.class);
 		this.drugItemService = Context.getService(DrugItemService.class);
-		this.drugMeasureService = Context.getService(DrugMeasureUnitService.class);
-		this.supplierService = Context.getService(SupplierService.class);
+		this.drugRegimeService = Context.getService(DrugRegimeService.class);
 		
 		Assert.assertNotNull(this.prescriptionService);
 		Assert.assertNotNull(this.dispensationService);
 		Assert.assertNotNull(this.patientService);
 		Assert.assertNotNull(this.drugItemService);
-		Assert.assertNotNull(this.drugMeasureService);
-		Assert.assertNotNull(this.supplierService);
-		
+		Assert.assertNotNull(this.drugRegimeService);
 	}
 }

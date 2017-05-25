@@ -28,9 +28,12 @@ import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacyapi.api.adapter.ObsOrderAdapter;
+import org.openmrs.module.pharmacyapi.api.dao.DispensationDAO;
 import org.openmrs.module.pharmacyapi.api.model.Prescription;
 import org.openmrs.module.pharmacyapi.api.util.MappedConcepts;
+import org.openmrs.module.pharmacyapi.api.util.MappedDurationUnits;
 import org.openmrs.module.pharmacyapi.api.util.MappedOrders;
+import org.openmrs.module.pharmacyapi.db.DbSessionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -44,6 +47,10 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 	private OrderService orderService;
 	
 	private ConceptService conceptService;
+	
+	private DispensationDAO dispensationDAO;
+	
+	private DbSessionManager dbSessionManager;
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
@@ -147,28 +154,64 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 	}
 	
 	@Override
+	public void setDispensationDAO(final DispensationDAO dispensationDAO) {
+		this.dispensationDAO = dispensationDAO;
+	}
+	
+	@Override
+	public void setDbSessionManager(final DbSessionManager dbSessionManager) {
+		this.dbSessionManager = dbSessionManager;
+	}
+	
+	@Override
 	public List<Prescription> findPrescriptionsByPatient(final Patient patient) throws APIException {
 
 		final List<Prescription> prescriptions = new ArrayList<>();
 
-		final List<Order> orders = this.orderService.getActiveOrders(patient, null, null, null);
+		// final List<Order> orders = this.orderService.getActiveOrders(patient,
+		// null, null, null);
 
-		for (final Order order : orders) {
-			final Prescription prescription = new Prescription(order);
+		this.dbSessionManager.setManualFlushMode();
+		final List<DrugOrder> drugOrders = this.dispensationDAO.findLastDrugOrdersByLastPatientEncounter(patient);
 
-			this.setPrescriptionInstructions(order, prescription);
-			prescription.setProvider(order.getOrderer().getName());
-			prescription.setPrescriptionDate(order.getEncounter().getEncounterDatetime());
-			prescription.setDrugToPickUp(((DrugOrder) order).getQuantity());
+		for (final DrugOrder drugOrder : drugOrders) {
+			final Prescription prescription = new Prescription(drugOrder);
 
-			if (this.hasArvDrug(order)) {
-				prescription.setConceptParentUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
-				prescription.setDrugPickedUp(this.calculateDrugPikckedUp((DrugOrder) order));
-				prescription.setDrugToPickUp(((DrugOrder) order).getQuantity() - prescription.getDrugPickedUp());
+			if ((drugOrder.getQuantity() == null) || (drugOrder.getQuantity().doubleValue() == 0)) {
+				drugOrder.setQuantity(this.calculateDrugQuantity(drugOrder));
+				this.dispensationDAO.updateOrderQuantity(drugOrder);
 			}
 
+			this.setPrescriptionInstructions(drugOrder, prescription);
+			prescription.setProvider(drugOrder.getOrderer().getName());
+			prescription.setPrescriptionDate(drugOrder.getEncounter().getEncounterDatetime());
+			prescription.setDrugToPickUp(drugOrder.getQuantity());
+
+			if (this.hasArvDrug(drugOrder)) {
+				prescription.setConceptParentUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
+				prescription.setDrugPickedUp(this.calculateDrugPikckedUp(drugOrder));
+				prescription.setDrugToPickUp((drugOrder.getQuantity() - prescription.getDrugPickedUp()));
+			}
 			prescriptions.add(prescription);
 		}
+		// for (final Order order : orders) {
+		// final Prescription prescription = new Prescription(order);
+		//
+		// this.setPrescriptionInstructions(order, prescription);
+		// prescription.setProvider(order.getOrderer().getName());
+		// prescription.setPrescriptionDate(order.getEncounter().getEncounterDatetime());
+		// prescription.setDrugToPickUp(((DrugOrder) order).getQuantity());
+		//
+		// if (this.hasArvDrug(order)) {
+		// prescription.setConceptParentUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
+		// prescription.setDrugPickedUp(this.calculateDrugPikckedUp((DrugOrder)
+		// order));
+		// prescription.setDrugToPickUp(((DrugOrder) order).getQuantity() -
+		// prescription.getDrugPickedUp());
+		// }
+		//
+		// prescriptions.add(prescription);
+		// }
 
 		return prescriptions;
 	}
@@ -187,8 +230,17 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 		return false;
 	}
 	
-	private void setPrescriptionInstructions(final Order order, final Prescription prescription) {
-		final String dosingInstructions = ((DrugOrder) order).getDosingInstructions();
+	// private void setPrescriptionInstructions(final Order order, final
+	// Prescription prescription) {
+	// final String dosingInstructions = ((DrugOrder)
+	// order).getDosingInstructions();
+	// final Concept concept =
+	// this.conceptService.getConceptByUuid(dosingInstructions);
+	// prescription.setDosingInstructions(concept.getNames().iterator().next().getName());
+	// }
+	
+	private void setPrescriptionInstructions(final DrugOrder drugOrder, final Prescription prescription) {
+		final String dosingInstructions = drugOrder.getDosingInstructions();
 		final Concept concept = this.conceptService.getConceptByUuid(dosingInstructions);
 		prescription.setDosingInstructions(concept.getNames().iterator().next().getName());
 	}
@@ -220,4 +272,9 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 		        && order.getConcept().getUuid().equals(observation.getOrder().getConcept().getUuid());
 	}
 	
+	private Double calculateDrugQuantity(final DrugOrder drugOrder) {
+		final int durationUnitsDays = MappedDurationUnits.getDurationDays(drugOrder.getDurationUnits().getUuid());
+		
+		return drugOrder.getDose() * drugOrder.getDuration() * durationUnitsDays;
+	}
 }

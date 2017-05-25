@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.openmrs.module.pharmacyapi.api.model;
+package org.openmrs.module.pharmacyapi.api.exception;
 
 import org.openmrs.api.APIException;
 

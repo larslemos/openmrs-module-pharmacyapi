@@ -2,7 +2,7 @@ package org.openmrs.module.pharmacyapi.web.resource;
 
 import java.util.List;
 
-import org.openmrs.Order;
+import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.pharmacyapi.api.model.Prescription;
@@ -35,7 +35,7 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 		if (rep instanceof RefRepresentation) {
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("order");
+			description.addProperty("drugOrder");
 			description.addProperty("dosingInstructions");
 			description.addProperty("provider");
 			description.addProperty("prescriptionDate");
@@ -47,7 +47,7 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 		} else if (rep instanceof DefaultRepresentation) {
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("order");
+			description.addProperty("drugOrder");
 			description.addProperty("dosingInstructions");
 			description.addProperty("provider");
 			description.addProperty("prescriptionDate");
@@ -60,7 +60,7 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 		} else if (rep instanceof FullRepresentation) {
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("order");
+			description.addProperty("drugOrder");
 			description.addProperty("dosingInstructions");
 			description.addProperty("provider");
 			description.addProperty("prescriptionDate");
@@ -97,28 +97,29 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 	
 	@Override
 	public Prescription getByUniqueId(final String uniqueId) {
-		final Order order = Context.getOrderService().getOrderByUuid(uniqueId);
-		return new Prescription(order);
+		final DrugOrder drugOrder = (DrugOrder) Context.getOrderService().getOrderByUuid(uniqueId);
+		
+		return new Prescription(drugOrder);
 	}
 	
 	@Override
 	protected PageableResult doSearch(final RequestContext context) {
-		
+
 		final String patientUuid = context.getRequest().getParameter("patient");
-		
+
 		if (patientUuid == null) {
 			return new EmptySearchResult();
 		}
-		
+
 		final Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-		
+
 		if (patient == null) {
 			return new EmptySearchResult();
 		}
-		
+
 		final PrescriptionService prescriptionService = Context.getService(PrescriptionService.class);
 		final List<Prescription> prescriptions = prescriptionService.findPrescriptionsByPatient(patient);
-		
-		return new NeedsPaging<Prescription>(prescriptions, context);
+
+		return new NeedsPaging<>(prescriptions, context);
 	}
 }

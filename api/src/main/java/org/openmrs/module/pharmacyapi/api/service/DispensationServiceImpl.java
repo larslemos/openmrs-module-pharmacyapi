@@ -26,8 +26,8 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.pharmacyapi.api.model.DispensationWrapper;
-import org.openmrs.module.pharmacyapi.api.model.DispensationWrapperItem;
+import org.openmrs.module.pharmacyapi.api.model.Dispensation;
+import org.openmrs.module.pharmacyapi.api.model.DispensationItem;
 import org.openmrs.module.pharmacyapi.api.util.MappedConcepts;
 import org.openmrs.module.pharmacyapi.api.util.MappedEncounters;
 import org.openmrs.module.pharmacyapi.db.DbSessionManager;
@@ -56,7 +56,7 @@ public class DispensationServiceImpl extends BaseOpenmrsService implements Dispe
 	private DbSessionManager dbSessionManager;
 	
 	@Override
-	public DispensationWrapper dispense(final DispensationWrapper dispensation) throws APIException {
+	public Dispensation dispense(final Dispensation dispensation) throws APIException {
 		
 		final Person person = this.personService.getPersonByUuid(dispensation.getProviderUuid());
 		final Collection<Provider> providers = this.providerService.getProvidersByPerson(person);
@@ -74,7 +74,7 @@ public class DispensationServiceImpl extends BaseOpenmrsService implements Dispe
 		    location);
 		
 		Order arvOrder = null;
-		DispensationWrapperItem arvDispensationItem = null;
+		DispensationItem arvDispensationItem = null;
 		
 		final Concept dispensationConceptSet = this.conceptService.getConceptByUuid(MappedConcepts.DISPENSATION_SET);
 		final Concept quantityConcept = this.conceptService.getConceptByUuid(MappedConcepts.MEDICATION_QUANTITY);
@@ -84,13 +84,17 @@ public class DispensationServiceImpl extends BaseOpenmrsService implements Dispe
 		this.dbSessionManager.setManualFlushMode();
 		try {
 			
-			for (final DispensationWrapperItem dispensationItem : dispensation.getDispensationItems()) {
+			for (final DispensationItem dispensationItem : dispensation.getDispensationItems()) {
 				
 				final Order order = this.orderService.getOrderByUuid(dispensationItem.getOrderUuid());
 				Order orderProcess = order.cloneForRevision();
+				// ((DrugOrder)
+				// (orderProcess)).setQuantity(this.calculateDrugQuantity(((DrugOrder)
+				// (orderProcess))));
 				
 				if (dispensationItem.getTotalDispensed().equals(((DrugOrder) orderProcess).getQuantity())) {
 					orderProcess = order.cloneForDiscontinuing();
+					((DrugOrder) (orderProcess)).setDispenseAsWritten(Boolean.TRUE);
 				}
 				
 				if (dispensationItem.getConceptParentUuid() != null) {
@@ -139,7 +143,7 @@ public class DispensationServiceImpl extends BaseOpenmrsService implements Dispe
 	}
 	
 	private void prepareDispensation(final Order order, final Encounter encounter, final Concept dispensationConceptSet,
-	        final Concept quantityConcept, final Concept nextPickUpConcept, final DispensationWrapperItem dispensationItem) {
+	        final Concept quantityConcept, final Concept nextPickUpConcept, final DispensationItem dispensationItem) {
 		
 		final Obs obsGroup = new Obs();
 		obsGroup.setConcept(dispensationConceptSet);
@@ -162,7 +166,7 @@ public class DispensationServiceImpl extends BaseOpenmrsService implements Dispe
 		encounter.addOrder(order);
 	}
 	
-	private void processFila(final Encounter enconter, final Order arvOrder, final DispensationWrapperItem dispensationItem,
+	private void processFila(final Encounter enconter, final Order arvOrder, final DispensationItem dispensationItem,
 	        final Concept quantityConcept, final Concept nextPickUpConcept) {
 		
 		final Concept posologyConcept = this.conceptService.getConceptByUuid(MappedConcepts.POSOLOGY);
@@ -199,6 +203,13 @@ public class DispensationServiceImpl extends BaseOpenmrsService implements Dispe
 		
 		this.encounterService.saveEncounter(enconter);
 	}
+	
+	// private Double calculateDrugQuantity(final DrugOrder drugOrder) {
+	// final int durationUnitsDays =
+	// MappedDurationUnits.getDurationDays(drugOrder.getDurationUnits().getUuid());
+	//
+	// return drugOrder.getDose() * drugOrder.getDuration() * durationUnitsDays;
+	// }
 	
 	@Override
 	public void setProviderService(final ProviderService providerService) {

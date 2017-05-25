@@ -18,7 +18,7 @@
 		</preConditions>
 
 		<comment>
-			Creating the pharmacyapi_drug_items table
+			Creating the pharmacyapi_drug_items, phm_drug_regime tables
 		</comment>
 
 		<createTable tableName="phm_drug_items">
@@ -27,23 +27,29 @@
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true" />
-			</column>
-
 			<column name="drug_id" type="int">
 				<constraints nullable="false" />
 			</column>
 
-			<column name="drug_units_id" type="int">
+			<column name="fnm_code" type="char(10)">
+				<constraints nullable="false" unique="true" />
+			</column>
+
+			<column name="pharmaceutical_form_id" type="int">
 				<constraints nullable="false" />
 			</column>
 
-			<column name="drug_unit_value" type="double">
+			<column name="therapeutic_group_id" type="int">
 				<constraints nullable="false" />
 			</column>
 
-			<column name="bar_code" type="varchar(100)" />
+			<column name="therapeutic_class_id" type="int">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
 
 			<column name="creator" defaultValueNumeric="0" type="int">
 				<constraints nullable="false" />
@@ -65,12 +71,59 @@
 
 		</createTable>
 
+		<createTable tableName="phm_drug_regime">
+
+			<column name="drug_regime_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+
+			<column name="drug_id" type="int">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="regime_id" type="int">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+
+		</createTable>
+
+		<!-- Drug Items Foreing Keys and Unique constants -->
 		<addForeignKeyConstraint constraintName="phm_drug_items_drug_fk"
 			baseTableName="phm_drug_items" baseColumnNames="drug_id"
 			referencedTableName="drug" referencedColumnNames="drug_id" />
 
-		<addForeignKeyConstraint constraintName="phm_drug_items_drug_unit_fk"
-			baseTableName="phm_drug_items" baseColumnNames="drug_units_id"
+		<addForeignKeyConstraint constraintName="phm_drug_items_pharmaceutical_form_fk"
+			baseTableName="phm_drug_items" baseColumnNames="pharmaceutical_form_id"
+			referencedTableName="concept" referencedColumnNames="concept_id" />
+
+		<addForeignKeyConstraint constraintName="phm_drug_items_therapeutic_group_fk"
+			baseTableName="phm_drug_items" baseColumnNames="therapeutic_group_id"
+			referencedTableName="concept" referencedColumnNames="concept_id" />
+
+		<addForeignKeyConstraint constraintName="phm_drug_items_therapeutic_class_fk"
+			baseTableName="phm_drug_items" baseColumnNames="therapeutic_class_id"
 			referencedTableName="concept" referencedColumnNames="concept_id" />
 
 		<addForeignKeyConstraint constraintName="phm_drug_items_creator_fk"
@@ -85,290 +138,34 @@
 			baseTableName="phm_drug_items" baseColumnNames="retired_by"
 			referencedTableName="users" referencedColumnNames="user_id" />
 
-	</changeSet>
-	<changeSet id="20170323-12:30" author="Guimino">
+		<addUniqueConstraint tableName="phm_drug_items"
+			columnNames="fnm_code" constraintName="phm_drug_items_fnm_code_unique" />
 
-		<preConditions onFail="MARK_RAN">
-			<not>
-				<tableExists tableName="phm_lot" />
-			</not>
-		</preConditions>
+		<!-- Drug Regime Foreing Keys and Unique constants -->
+		<addForeignKeyConstraint constraintName="phm_drug_regime_drug_fk"
+			baseTableName="phm_drug_regime" baseColumnNames="drug_id"
+			referencedTableName="drug" referencedColumnNames="drug_id" />
 
-		<comment>Created Tables phm_lot, phm_supplier, phm_stock_entry
-		</comment>
+		<addForeignKeyConstraint constraintName="phm_drug_regime_regime_fk"
+			baseTableName="phm_drug_regime" baseColumnNames="regime_id"
+			referencedTableName="concept" referencedColumnNames="concept_id" />
 
-		<createTable tableName="phm_lot">
-			<column name="lot_id" autoIncrement="true" type="int">
-				<constraints nullable="false" primaryKey="true" />
-			</column>
-			<column name="code" type="varchar(20)">
-				<constraints nullable="false" />
-			</column>
-			<column name="description" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="drug_item_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="drug_measure_unit_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="expiration_date" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-			<column name="manufacture_date" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-			<column name="creator" type="int" defaultValueNumeric="0">
-				<constraints nullable="false" />
-			</column>
-			<column name="date_created" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-			<column name="changed_by" type="int" />
-			<column name="date_changed" type="DATETIME" />
-			<column defaultValueBoolean="false" name="retired" type="BOOLEAN">
-				<constraints nullable="false" />
-			</column>
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="DATETIME" />
-			<column name="retire_reason" type="varchar(255)" />
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true" />
-			</column>
-		</createTable>
-		<createTable tableName="phm_supplier">
-			<column name="supplier_id" autoIncrement="true" type="int">
-				<constraints nullable="false" primaryKey="true" />
-			</column>
-			<column name="name" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="address" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="location_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="registration_Date" type="datetime">
-				<constraints nullable="false" />
-			</column>
-			<column name="creator" type="int" defaultValueNumeric="0">
-				<constraints nullable="false" />
-			</column>
-			<column name="date_created" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-			<column name="changed_by" type="int" />
-			<column name="date_changed" type="DATETIME" />
-			<column defaultValueBoolean="false" name="retired" type="BOOLEAN">
-				<constraints nullable="false" />
-			</column>
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="DATETIME" />
-			<column name="retire_reason" type="varchar(255)" />
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true" />
-			</column>
-		</createTable>
-		<createTable tableName="phm_drug_measure_unit">
-			<column name="drug_measure_unit_id" autoIncrement="true" type="int">
-				<constraints nullable="false" primaryKey="true" />
-			</column>
-			<column name="drug_item_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="unit_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="quantity_per_unit" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="creator" type="int" defaultValueNumeric="0">
-				<constraints nullable="false" />
-			</column>
-			<column name="date_created" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-			<column name="changed_by" type="int" />
-			<column name="date_changed" type="DATETIME" />
-			<column defaultValueBoolean="false" name="retired" type="BOOLEAN">
-				<constraints nullable="false" />
-			</column>
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="DATETIME" />
-			<column name="retire_reason" type="varchar(255)" />
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true" />
-			</column>
-		</createTable>
-		<createTable tableName="phm_stock_entry">
-			<column name="stock_entry_id" autoIncrement="true" type="int">
-				<constraints nullable="false" primaryKey="true" />
-			</column>
-			<column name="lot_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="location_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="reception_date" type="datetime">
-				<constraints nullable="false" />
-			</column>
-			<column name="provenance_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="creator" type="int" defaultValueNumeric="0">
-				<constraints nullable="false" />
-			</column>
-			<column name="date_created" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-			<column name="changed_by" type="int" />
-			<column name="date_changed" type="DATETIME" />
-			<column defaultValueBoolean="false" name="retired" type="BOOLEAN">
-				<constraints nullable="false" />
-			</column>
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="DATETIME" />
-			<column name="retire_reason" type="varchar(255)" />
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true" />
-			</column>
-		</createTable>
+		<addForeignKeyConstraint constraintName="phm_drug_regime_creator_fk"
+			baseTableName="phm_drug_regime" baseColumnNames="creator"
+			referencedTableName="users" referencedColumnNames="user_id" />
 
-		<createTable tableName="phm_dispensation">
-			<column name="dispensation_id" autoIncrement="true" type="int">
-				<constraints nullable="false" primaryKey="true" />
-			</column>
-			<column name="order_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="stock_entry_id" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="quantity" type="datetime">
-				<constraints nullable="false" />
-			</column>
-			<column name="creator" type="int" defaultValueNumeric="0">
-				<constraints nullable="false" />
-			</column>
-			<column name="date_created" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-			<column defaultValueBoolean="false" name="retired" type="BOOLEAN">
-				<constraints nullable="false" />
-			</column>
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="DATETIME" />
-			<column name="retire_reason" type="varchar(255)" />
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true" />
-			</column>
-		</createTable>
+		<addForeignKeyConstraint constraintName="phm_drug_regime_changed_by_fk"
+			baseTableName="phm_drug_regime" baseColumnNames="changed_by"
+			referencedTableName="users" referencedColumnNames="user_id" />
 
-		<addForeignKeyConstraint constraintName="phm_lot_creator_fk"
-			baseTableName="phm_lot" baseColumnNames="creator"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_lot_changed_by_fk"
-			baseTableName="phm_lot" baseColumnNames="changed_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_lot_retired_by_fk"
-			baseTableName="phm_lot" baseColumnNames="retired_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_lot_drug_item_fk"
-			baseTableName="phm_lot" baseColumnNames="drug_item_id"
-			referencedTableName="phm_drug_items" referencedColumnNames="drug_item_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_lot_measure_unit_fk"
-			baseTableName="phm_lot" baseColumnNames="drug_measure_unit_id"
-			referencedTableName="phm_drug_measure_unit" referencedColumnNames="drug_measure_unit_id"
-			deferrable="false" initiallyDeferred="false" />
+		<addForeignKeyConstraint constraintName="phm_drug_regime_retired_by_fk"
+			baseTableName="phm_drug_regime" baseColumnNames="retired_by"
+			referencedTableName="users" referencedColumnNames="user_id" />
 
-		<addForeignKeyConstraint constraintName="phm_supplier_creator_fk"
-			baseTableName="phm_supplier" baseColumnNames="creator"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_supplier_changed_by_fk"
-			baseTableName="phm_supplier" baseColumnNames="changed_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_supplier_retired_by_fk"
-			baseTableName="phm_supplier" baseColumnNames="retired_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_supplier_location_fk"
-			baseTableName="phm_supplier" baseColumnNames="location_id"
-			referencedTableName="location" referencedColumnNames="location_id"
-			deferrable="false" initiallyDeferred="false" />
-
-		<addForeignKeyConstraint constraintName="phm_drug_measure_unit_creator_fk"
-			baseTableName="phm_drug_measure_unit" baseColumnNames="creator"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_drug_measure_unit_changed_by_fk"
-			baseTableName="phm_drug_measure_unit" baseColumnNames="changed_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_drug_measure_unit_retired_by_fk"
-			baseTableName="phm_drug_measure_unit" baseColumnNames="retired_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_drug_measure_unit_unit_fk"
-			baseTableName="phm_drug_measure_unit" baseColumnNames="unit_id"
-			referencedTableName="concept" referencedColumnNames="concept_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_drug_measure_unit_drug_item_fk"
-			baseTableName="phm_drug_measure_unit" baseColumnNames="drug_item_id"
-			referencedTableName="phm_drug_items" referencedColumnNames="drug_item_id"
-			deferrable="false" initiallyDeferred="false" />
-
-		<addForeignKeyConstraint constraintName="phm_stock_entry_creator_fk"
-			baseTableName="phm_stock_entry" baseColumnNames="creator"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_stock_entry_changed_by_fk"
-			baseTableName="phm_stock_entry" baseColumnNames="changed_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_stock_entry_retired_by_fk"
-			baseTableName="phm_stock_entry" baseColumnNames="retired_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_stock_entry_lot_fk"
-			baseTableName="phm_stock_entry" baseColumnNames="lot_id"
-			referencedTableName="phm_lot" referencedColumnNames="lot_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_stock_entry_location_fk"
-			baseTableName="phm_stock_entry" baseColumnNames="location_id"
-			referencedTableName="location" referencedColumnNames="location_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_stock_entry_provenance_fk"
-			baseTableName="phm_stock_entry" baseColumnNames="provenance_id"
-			referencedTableName="phm_supplier" referencedColumnNames="supplier_id"
-			deferrable="false" initiallyDeferred="false" />
-
-
-		<addForeignKeyConstraint constraintName="phm_dispensation_creator_fk"
-			baseTableName="phm_dispensation" baseColumnNames="creator"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_dispensation_retired_by_fk"
-			baseTableName="phm_dispensation" baseColumnNames="retired_by"
-			referencedTableName="users" referencedColumnNames="user_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_dispensation_stock_entry_fk"
-			baseTableName="phm_dispensation" baseColumnNames="stock_entry_id"
-			referencedTableName="phm_stock_entry" referencedColumnNames="stock_entry_id"
-			deferrable="false" initiallyDeferred="false" />
-		<addForeignKeyConstraint constraintName="phm_dispensation_order_fk"
-			baseTableName="phm_dispensation" baseColumnNames="order_id"
-			referencedTableName="orders" referencedColumnNames="order_id"
-			deferrable="false" initiallyDeferred="false" />
+		<addUniqueConstraint tableName="phm_drug_regime"
+			columnNames="drug_id,regime_id" constraintName="phm_drug_regime_unique" />
 
 	</changeSet>
+
 
 </databaseChangeLog>
