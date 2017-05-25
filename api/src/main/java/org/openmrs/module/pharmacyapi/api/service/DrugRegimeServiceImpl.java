@@ -11,7 +11,6 @@ import org.openmrs.Concept;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacyapi.api.dao.DrugRegimeDAO;
 import org.openmrs.module.pharmacyapi.api.model.DrugRegime;
-import org.openmrs.module.pharmacyapi.db.DbSessionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -21,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DrugRegimeServiceImpl extends BaseOpenmrsService implements DrugRegimeService {
 	
 	private DrugRegimeDAO drugRegimeDAO;
-	
-	private DbSessionManager dbSessionManager;
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
@@ -35,12 +32,6 @@ public class DrugRegimeServiceImpl extends BaseOpenmrsService implements DrugReg
 	@Override
 	public void setDrugRegimeDAO(final DrugRegimeDAO drugRegimeDAO) {
 		this.drugRegimeDAO = drugRegimeDAO;
-	}
-	
-	@Override
-	public void setDbSessionManager(final DbSessionManager dbSessionManager) {
-		
-		this.dbSessionManager = dbSessionManager;
 	}
 	
 	@Override

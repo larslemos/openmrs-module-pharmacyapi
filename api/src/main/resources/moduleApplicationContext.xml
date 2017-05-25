@@ -109,9 +109,6 @@
 				<property name="drugRegimeDAO">
 					<ref bean="drugRegimeDAO" />
 				</property>
-				<property name="dbSessionManager">
-					<ref bean="dbSessionManager" />
-				</property>
 			</bean>
 		</property>
 		<property name="preInterceptors">

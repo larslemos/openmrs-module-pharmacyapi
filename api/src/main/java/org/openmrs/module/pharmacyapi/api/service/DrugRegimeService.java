@@ -9,7 +9,6 @@ import org.openmrs.Concept;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.pharmacyapi.api.dao.DrugRegimeDAO;
 import org.openmrs.module.pharmacyapi.api.model.DrugRegime;
-import org.openmrs.module.pharmacyapi.db.DbSessionManager;
 
 /**
  *
@@ -17,8 +16,6 @@ import org.openmrs.module.pharmacyapi.db.DbSessionManager;
 public interface DrugRegimeService extends OpenmrsService {
 	
 	void setDrugRegimeDAO(DrugRegimeDAO drugRegimeDAO);
-	
-	void setDbSessionManager(final DbSessionManager dbSessionManager);
 	
 	List<DrugRegime> findDrugRegimesByRegime(Concept regime);
 	
