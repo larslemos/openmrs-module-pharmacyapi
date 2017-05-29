@@ -21,7 +21,7 @@ public interface DrugRegimeDAO {
 	
 	public interface QUERY {
 		
-		public static final String findByRegime = "select distinct drugRegime from DrugRegime drugRegime join fetch drugRegime.drug join fetch drugRegime.regime where drugRegime.regime =:regime and drugRegime.retired = :retired";
+		public static final String findByRegime = "select distinct drugRegime from DrugRegime drugRegime join fetch drugRegime.drugItem join fetch drugRegime.regime where drugRegime.regime =:regime and drugRegime.retired = :retired";
 	}
 	
 	void setSessionFactory(SessionFactory sessionFactory);

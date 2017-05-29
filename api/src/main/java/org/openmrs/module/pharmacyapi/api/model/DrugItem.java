@@ -24,7 +24,7 @@ import org.openmrs.Drug;
  */
 @Entity
 @Table(name = "phm_drug_items", uniqueConstraints = { @UniqueConstraint(columnNames = { "drug_id" }),
-        @UniqueConstraint(columnNames = { "fnm_code" }) })
+        @UniqueConstraint(columnNames = { "fnm_code" }), @UniqueConstraint(columnNames = { "uuid" }) })
 public class DrugItem extends BaseOpenmrsMetadataWrapper implements Serializable {
 	
 	private static final long serialVersionUID = -2778691803288646029L;

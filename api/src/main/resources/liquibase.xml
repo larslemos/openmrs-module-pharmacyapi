@@ -71,44 +71,6 @@
 
 		</createTable>
 
-		<createTable tableName="phm_drug_regime">
-
-			<column name="drug_regime_id" type="int" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-
-			<column name="drug_id" type="int">
-				<constraints nullable="false" />
-			</column>
-
-			<column name="regime_id" type="int">
-				<constraints nullable="false" />
-			</column>
-
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true" />
-			</column>
-
-			<column name="creator" defaultValueNumeric="0" type="int">
-				<constraints nullable="false" />
-			</column>
-			<column name="date_created" type="datetime">
-				<constraints nullable="false" />
-			</column>
-
-			<column name="changed_by" type="int" />
-			<column name="date_changed" type="datetime" />
-
-			<column defaultValueBoolean="false" name="retired" type="boolean">
-				<constraints nullable="false" />
-			</column>
-
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="datetime" />
-			<column name="retire_reason" type="varchar(255)" />
-
-		</createTable>
-
 		<!-- Drug Items Foreing Keys and Unique constants -->
 		<addForeignKeyConstraint constraintName="phm_drug_items_drug_fk"
 			baseTableName="phm_drug_items" baseColumnNames="drug_id"
@@ -140,11 +102,60 @@
 
 		<addUniqueConstraint tableName="phm_drug_items"
 			columnNames="fnm_code" constraintName="phm_drug_items_fnm_code_unique" />
+	</changeSet>
+	
+	<changeSet id="1234567890" author="Guimino">
 
-		<!-- Drug Regime Foreing Keys and Unique constants -->
-		<addForeignKeyConstraint constraintName="phm_drug_regime_drug_fk"
-			baseTableName="phm_drug_regime" baseColumnNames="drug_id"
-			referencedTableName="drug" referencedColumnNames="drug_id" />
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="phm_drug_regime" />
+			</not>
+		</preConditions>
+
+		<comment>
+			Creating phm_drug_regime table
+		</comment>
+
+		<createTable tableName="phm_drug_regime">
+
+			<column name="drug_regime_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+
+			<column name="drug_item_id" type="int">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="regime_id" type="int">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true" />
+			</column>
+
+			<column name="creator" defaultValueNumeric="0" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+
+			<column defaultValueBoolean="false" name="retired" type="boolean">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" />
+
+		</createTable>
+		<addForeignKeyConstraint constraintName="phm_drug_regime_drug_item_fk"
+			baseTableName="phm_drug_regime" baseColumnNames="drug_item_id"
+			referencedTableName="phm_drug_items" referencedColumnNames="drug_item_id" />
 
 		<addForeignKeyConstraint constraintName="phm_drug_regime_regime_fk"
 			baseTableName="phm_drug_regime" baseColumnNames="regime_id"
@@ -163,9 +174,8 @@
 			referencedTableName="users" referencedColumnNames="user_id" />
 
 		<addUniqueConstraint tableName="phm_drug_regime"
-			columnNames="drug_id,regime_id" constraintName="phm_drug_regime_unique" />
+			columnNames="drug_item_id,regime_id" constraintName="phm_drug_regime_unique" />
 
 	</changeSet>
-
 
 </databaseChangeLog>

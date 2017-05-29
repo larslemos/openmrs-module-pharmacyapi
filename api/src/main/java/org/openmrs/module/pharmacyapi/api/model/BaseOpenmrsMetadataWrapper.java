@@ -22,13 +22,6 @@ public abstract class BaseOpenmrsMetadataWrapper extends BaseOpenmrsObject imple
 	@Column(name = "date_created", nullable = false)
 	private Date dateCreated;
 	
-	@ManyToOne
-	@JoinColumn(name = "changed_by")
-	private User changedBy;
-	
-	@Column(name = "date_changed")
-	private Date dateChanged;
-	
 	@Column(name = "retired", nullable = false)
 	@Field
 	private Boolean retired = Boolean.FALSE;
@@ -42,6 +35,13 @@ public abstract class BaseOpenmrsMetadataWrapper extends BaseOpenmrsObject imple
 	
 	@Column(name = "retire_reason", length = 255)
 	private String retireReason;
+	
+	@ManyToOne
+	@JoinColumn(name = "changed_by")
+	private User changedBy;
+	
+	@Column(name = "date_changed")
+	private Date dateChanged;
 	
 	//
 	// ***** Constructors *****
@@ -117,38 +117,6 @@ public abstract class BaseOpenmrsMetadataWrapper extends BaseOpenmrsObject imple
 	}
 	
 	/**
-	 * @see org.openmrs.Auditable#getChangedBy()
-	 */
-	@Override
-	public User getChangedBy() {
-		return this.changedBy;
-	}
-	
-	/**
-	 * @see org.openmrs.Auditable#setChangedBy(org.openmrs.User)
-	 */
-	@Override
-	public void setChangedBy(final User changedBy) {
-		this.changedBy = changedBy;
-	}
-	
-	/**
-	 * @see org.openmrs.Auditable#getDateChanged()
-	 */
-	@Override
-	public Date getDateChanged() {
-		return this.dateChanged;
-	}
-	
-	/**
-	 * @see org.openmrs.Auditable#setDateChanged(java.util.Date)
-	 */
-	@Override
-	public void setDateChanged(final Date dateChanged) {
-		this.dateChanged = dateChanged;
-	}
-	
-	/**
 	 * @see org.openmrs.Retireable#isRetired()
 	 */
 	@Override
@@ -221,6 +189,26 @@ public abstract class BaseOpenmrsMetadataWrapper extends BaseOpenmrsObject imple
 	@Override
 	public void setRetireReason(final String retireReason) {
 		this.retireReason = retireReason;
+	}
+	
+	@Override
+	public User getChangedBy() {
+		return this.changedBy;
+	}
+	
+	@Override
+	public void setChangedBy(final User changedBy) {
+		this.changedBy = changedBy;
+	}
+	
+	@Override
+	public Date getDateChanged() {
+		return this.dateChanged;
+	}
+	
+	@Override
+	public void setDateChanged(final Date dateChanged) {
+		this.dateChanged = dateChanged;
 	}
 	
 }

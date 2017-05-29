@@ -17,12 +17,12 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.openmrs.Concept;
-import org.openmrs.Drug;
 import org.openmrs.module.pharmacyapi.api.dao.DrugRegimeDAO;
 
 @NamedQueries(value = { @NamedQuery(name = DrugRegimeDAO.QUERY_NAME.findByRegime, query = DrugRegimeDAO.QUERY.findByRegime) })
 @Entity
-@Table(name = "phm_drug_regime", uniqueConstraints = { @UniqueConstraint(columnNames = { "drug_id", "regime_id" }) })
+@Table(name = "phm_drug_regime", uniqueConstraints = { @UniqueConstraint(columnNames = { "drug_item_id", "regime_id" }),
+        @UniqueConstraint(columnNames = { "uuid" }) })
 public class DrugRegime extends BaseOpenmrsMetadataWrapper implements Serializable {
 	
 	private static final long serialVersionUID = -3770809635357840242L;
@@ -37,8 +37,8 @@ public class DrugRegime extends BaseOpenmrsMetadataWrapper implements Serializab
 	private Concept regime;
 	
 	@ManyToOne
-	@JoinColumn(name = "drug_id")
-	private Drug drug;
+	@JoinColumn(name = "drug_item_id")
+	private DrugItem drugItem;
 	
 	public DrugRegime() {
 	}
@@ -62,13 +62,11 @@ public class DrugRegime extends BaseOpenmrsMetadataWrapper implements Serializab
 		this.regime = regime;
 	}
 	
-	public Drug getDrug() {
-		return this.drug;
+	public DrugItem getDrugItem() {
+		return this.drugItem;
 	}
 	
-	public void setDrug(final Drug drug) {
-		
-		this.drug = drug;
+	public void setDrugItem(final DrugItem drugItem) {
+		this.drugItem = drugItem;
 	}
-	
 }

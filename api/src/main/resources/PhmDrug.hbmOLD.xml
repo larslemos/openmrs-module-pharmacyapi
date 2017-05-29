@@ -46,7 +46,7 @@
 		</id>
 		
 		<discriminator column="drug_regime_id" insert="false" />
-		<many-to-one name="drug" class="org.openmrs.Drug" column="drug_id" not-null="true" />
+		<many-to-one name="drugItem" class="org.openmrs.module.pharmacyapi.api.model.DrugItem" column="drug_item_id" not-null="true" />
 		<many-to-one name="regime" class="org.openmrs.Drug" column="regime_id" not-null="true"  />
 
 		<!-- Life_cycle_attributes -->

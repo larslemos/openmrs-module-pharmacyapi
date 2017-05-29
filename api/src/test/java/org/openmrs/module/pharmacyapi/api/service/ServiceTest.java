@@ -46,5 +46,8 @@ public class ServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNotNull(this.patientService);
 		Assert.assertNotNull(this.drugItemService);
 		Assert.assertNotNull(this.drugRegimeService);
+		
+		System.out.println("Servico DrugRegime : " + this.drugRegimeService);
+		System.out.println("Servico DrugItem: " + this.drugItemService);
 	}
 }
