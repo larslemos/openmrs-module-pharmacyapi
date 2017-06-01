@@ -208,13 +208,6 @@ public class DispensationServiceImpl extends BaseOpenmrsService implements Dispe
 		this.encounterService.saveEncounter(enconter);
 	}
 	
-	// private Double calculateDrugQuantity(final DrugOrder drugOrder) {
-	// final int durationUnitsDays =
-	// MappedDurationUnits.getDurationDays(drugOrder.getDurationUnits().getUuid());
-	//
-	// return drugOrder.getDose() * drugOrder.getDuration() * durationUnitsDays;
-	// }
-	
 	@Override
 	public void setProviderService(final ProviderService providerService) {
 		this.providerService = providerService;

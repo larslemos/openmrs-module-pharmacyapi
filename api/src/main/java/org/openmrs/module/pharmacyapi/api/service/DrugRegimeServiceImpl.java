@@ -62,7 +62,7 @@ public class DrugRegimeServiceImpl extends BaseOpenmrsService implements DrugReg
 		final List<Drug> drugs = new ArrayList<>();
 		final List<DrugRegime> drugRegimes = this.drugRegimeDAO.findAll(false);
 
-		// TODO: Add apache-comom-collections dependency to do this job
+		// TODO: Add Lambdaj dependency to do this job
 		for (final DrugRegime drugRegime : drugRegimes) {
 
 			drugs.add(drugRegime.getDrugItem().getDrug());

@@ -212,10 +212,9 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 		}
 		catch (final EntityNotFoundException e) {
 			
-			// FIXME:Remover esse code comment antes de comitar
-			// throw new IllegalArgumentException("Drug_Item not found for Drug
-			// " + drugOrder.getDrug());
-			return false;
+			throw new IllegalArgumentException("Drug_Item not found for Drug " + drugOrder.getDrug());
+			
+			// return false;
 		}
 		
 		try {
@@ -227,25 +226,6 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 			return Boolean.FALSE;
 		}
 	}
-	
-	// private boolean hasArvDrug(final Order order) {
-	//
-	// final Concept concept =
-	// this.conceptService.getConceptByUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
-	// final List<ConceptSearchResult> findConceptAnswers =
-	// this.conceptService.findConceptAnswers(null,
-	// Context.getLocale(), concept);
-	//
-	// for (final ConceptSearchResult conceptSearchResult : findConceptAnswers)
-	// {
-	// if
-	// (order.getConcept().getUuid().equals(conceptSearchResult.getConcept().getUuid()))
-	// {
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
 	
 	private void setPrescriptionInstructions(final DrugOrder drugOrder, final Prescription prescription) {
 		final String dosingInstructions = drugOrder.getDosingInstructions();
