@@ -33,7 +33,7 @@ import org.openmrs.module.pharmacyapi.api.dao.DrugItemDAO;
 public class DrugItem extends BaseOpenmrsMetadataWrapper implements Serializable {
 	
 	private static final long serialVersionUID = -2778691803288646029L;
-	
+
 	@Id
 	@GeneratedValue
 	@Column(name = "drug_item_id")
@@ -45,7 +45,7 @@ public class DrugItem extends BaseOpenmrsMetadataWrapper implements Serializable
 	
 	@Column(name = "fnm_code")
 	private String fnmCode;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "pharmaceutical_form_id")
 	private Concept pharmaceuticalForm;
@@ -75,7 +75,7 @@ public class DrugItem extends BaseOpenmrsMetadataWrapper implements Serializable
 	public void setDrug(final Drug drug) {
 		this.drug = drug;
 	}
-	
+
 	public Integer getDrugItemId() {
 		return this.drugItemId;
 	}
@@ -107,27 +107,27 @@ public class DrugItem extends BaseOpenmrsMetadataWrapper implements Serializable
 	public void setTherapeuticGroup(final Concept therapeuticGroup) {
 		this.therapeuticGroup = therapeuticGroup;
 	}
-	
+
 	public Concept getTherapeuticClass() {
 		return this.therapeuticClass;
 	}
-	
+
 	public void setTherapeuticClass(final Concept therapeuticClass) {
 		this.therapeuticClass = therapeuticClass;
 	}
-	
+
 	@Override
 	public boolean equals(final Object obj) {
-		
+
 		if (obj == null) {
 			return false;
 		}
-		
+
 		if (obj instanceof DrugItem) {
 			final DrugItem other = (DrugItem) obj;
 			return new EqualsBuilder().append(this.getDrug(), other.getDrug()).isEquals();
 		}
-		
+
 		return false;
 	}
 }
