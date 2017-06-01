@@ -5,6 +5,7 @@ import java.util.List;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.pharmacyapi.api.exception.PharmacyBusinessException;
 import org.openmrs.module.pharmacyapi.api.model.Prescription;
 import org.openmrs.module.pharmacyapi.api.service.PrescriptionService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -42,6 +43,7 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 			description.addProperty("conceptParentUuid");
 			description.addProperty("drugToPickUp");
 			description.addProperty("drugPickedUp");
+			description.addProperty("drugRegime");
 			description.addSelfLink();
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
@@ -54,6 +56,7 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 			description.addProperty("conceptParentUuid");
 			description.addProperty("drugToPickUp");
 			description.addProperty("drugPickedUp");
+			description.addProperty("drugRegime");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -67,6 +70,7 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 			description.addProperty("conceptParentUuid");
 			description.addProperty("drugToPickUp");
 			description.addProperty("drugPickedUp");
+			description.addProperty("drugRegime");
 			description.addSelfLink();
 			return description;
 		} else {
@@ -118,8 +122,14 @@ public class PrescriptionResource extends DataDelegatingCrudResource<Prescriptio
 		}
 
 		final PrescriptionService prescriptionService = Context.getService(PrescriptionService.class);
-		final List<Prescription> prescriptions = prescriptionService.findPrescriptionsByPatient(patient);
+		try {
+			final List<Prescription> prescriptions = prescriptionService.findPrescriptionsByPatient(patient);
+			return new NeedsPaging<>(prescriptions, context);
 
-		return new NeedsPaging<>(prescriptions, context);
+		} catch (final PharmacyBusinessException e) {
+
+		}
+
+		return new EmptySearchResult();
 	}
 }

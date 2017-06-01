@@ -12,19 +12,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.module.pharmacyapi.api.dao.DrugItemDAO;
 
 /**
  *
  */
+@NamedQueries(value = { @NamedQuery(name = DrugItemDAO.QUERY_NAME.findByDrug, query = DrugItemDAO.QUERY.findByDrug),
+        @NamedQuery(name = DrugItemDAO.QUERY_NAME.findByUUID, query = DrugItemDAO.QUERY.findByUUID) })
 @Entity
 @Table(name = "phm_drug_items", uniqueConstraints = { @UniqueConstraint(columnNames = { "drug_id" }),
-        @UniqueConstraint(columnNames = { "fnm_code" }), @UniqueConstraint(columnNames = { "uuid" }) })
+        @UniqueConstraint(columnNames = { "fnm_code" }) })
 public class DrugItem extends BaseOpenmrsMetadataWrapper implements Serializable {
 	
 	private static final long serialVersionUID = -2778691803288646029L;

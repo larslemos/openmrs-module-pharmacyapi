@@ -32,6 +32,8 @@ public class Prescription extends BaseOpenmrsData implements Serializable {
 	
 	private String conceptParentUuid;
 	
+	private DrugRegime drugRegime;
+	
 	public Prescription(final DrugOrder drugOrder) {
 		this.drugPickedUp = 0.0;
 		this.drugToPickUp = 0.0;
@@ -104,4 +106,11 @@ public class Prescription extends BaseOpenmrsData implements Serializable {
 		this.drugOrder = drugOrder;
 	}
 	
+	public DrugRegime getDrugRegime() {
+		return this.drugRegime;
+	}
+	
+	public void setDrugRegime(final DrugRegime drugRegime) {
+		this.drugRegime = drugRegime;
+	}
 }

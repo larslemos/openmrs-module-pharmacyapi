@@ -99,9 +99,7 @@
 		<addForeignKeyConstraint constraintName="phm_drug_items_retired_by_fk"
 			baseTableName="phm_drug_items" baseColumnNames="retired_by"
 			referencedTableName="users" referencedColumnNames="user_id" />
-
-		<addUniqueConstraint tableName="phm_drug_items"
-			columnNames="fnm_code" constraintName="phm_drug_items_fnm_code_unique" />
+	
 	</changeSet>
 	
 	<changeSet id="1234567890" author="Guimino">
@@ -172,10 +170,10 @@
 		<addForeignKeyConstraint constraintName="phm_drug_regime_retired_by_fk"
 			baseTableName="phm_drug_regime" baseColumnNames="retired_by"
 			referencedTableName="users" referencedColumnNames="user_id" />
-
+			
 		<addUniqueConstraint tableName="phm_drug_regime"
-			columnNames="drug_item_id,regime_id" constraintName="phm_drug_regime_unique" />
-
+			columnNames="drug_item_id, regime_id" constraintName="phm_drug_regime_drug_item_regime_unique" />
+			
 	</changeSet>
 
 </databaseChangeLog>

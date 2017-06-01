@@ -88,6 +88,9 @@
 				<property name="dbSessionManager">
 					<ref bean="dbSessionManager" />
 				</property>
+				<property name="dispensationDAO">
+					<ref bean="dispensationDAO" />
+				</property>
 			</bean>
 		</property>
 		<property name="preInterceptors">
@@ -107,7 +110,11 @@
 			<bean
 				class="org.openmrs.module.pharmacyapi.api.service.DrugRegimeServiceImpl">
 				<property name="drugRegimeDAO">
-					<ref bean="drugRegimeDAO" />
+					<bean class="org.openmrs.module.pharmacyapi.api.dao.DrugRegimeDAOImpl">
+						<property name="sessionFactory">
+							<ref bean="sessionFactory" />
+						</property>
+					</bean>
 				</property>
 			</bean>
 		</property>
@@ -127,8 +134,10 @@
 		<property name="target">
 			<bean
 				class="org.openmrs.module.pharmacyapi.api.service.DrugItemServiceImpl">
-				<property name="sessionFactory">
-					<ref bean="dbSessionFactory" />
+				<property name="drugItemDAO">
+					<bean class="org.openmrs.module.pharmacyapi.api.dao.DrugItemDAOImpl" >
+						<property name="sessionFactory"> <ref bean="sessionFactory" /></property>
+					</bean>
 				</property>
 			</bean>
 		</property>
@@ -187,10 +196,4 @@
 		</property>
 	</bean>
 	
-	<bean id="drugRegimeDAO" class="org.openmrs.module.pharmacyapi.api.dao.DrugRegimeDAOImpl">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>   
-    
 </beans>

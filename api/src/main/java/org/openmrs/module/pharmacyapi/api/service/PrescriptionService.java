@@ -12,6 +12,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.OrderService;
 import org.openmrs.module.pharmacyapi.api.dao.DispensationDAO;
+import org.openmrs.module.pharmacyapi.api.exception.PharmacyBusinessException;
 import org.openmrs.module.pharmacyapi.api.model.Prescription;
 import org.openmrs.module.pharmacyapi.db.DbSessionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public interface PrescriptionService extends OpenmrsService {
 	
 	void parseObsToOrders(final Patient patient) throws APIException;
 	
-	List<Prescription> findPrescriptionsByPatient(final Patient patient) throws APIException;
+	List<Prescription> findPrescriptionsByPatient(final Patient patient) throws PharmacyBusinessException;
 	
 	void setOrderService(final OrderService orderService) throws APIException;
 	

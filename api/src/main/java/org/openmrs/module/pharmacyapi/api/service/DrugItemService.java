@@ -1,26 +1,28 @@
 /**
  *
- * UCSF -Global Programs 2017
- *
  */
 package org.openmrs.module.pharmacyapi.api.service;
 
 import java.util.List;
 
+import org.openmrs.Drug;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.api.db.hibernate.DbSessionFactory;
+import org.openmrs.module.pharmacyapi.api.dao.DrugItemDAO;
+import org.openmrs.module.pharmacyapi.api.exception.PharmacyBusinessException;
 import org.openmrs.module.pharmacyapi.api.model.DrugItem;
 
 /**
  */
 public interface DrugItemService extends OpenmrsService {
 	
-	void setSessionFactory(final DbSessionFactory dbSessionFactory);
+	void setDrugItemDAO(final DrugItemDAO drugItemDAO);
 	
-	DrugItem findByUuid(String uuid);
+	DrugItem findDrugItemByUuid(String uuid);
 	
-	List<DrugItem> findAll(boolean retired);
+	List<DrugItem> findAllDrugItem(Boolean retired);
 	
-	void save(DrugItem drugItem);
+	DrugItem findDrugItemByDrug(Drug drug) throws PharmacyBusinessException;
+	
+	void saveDrugItem(DrugItem drugItem);
 	
 }

@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.CareSetting;
 import org.openmrs.Concept;
-import org.openmrs.ConceptSearchResult;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
@@ -29,6 +28,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.pharmacyapi.api.adapter.ObsOrderAdapter;
 import org.openmrs.module.pharmacyapi.api.dao.DispensationDAO;
+import org.openmrs.module.pharmacyapi.api.exception.EntityNotFoundException;
+import org.openmrs.module.pharmacyapi.api.exception.PharmacyBusinessException;
+import org.openmrs.module.pharmacyapi.api.model.DrugItem;
 import org.openmrs.module.pharmacyapi.api.model.Prescription;
 import org.openmrs.module.pharmacyapi.api.util.MappedConcepts;
 import org.openmrs.module.pharmacyapi.api.util.MappedDurationUnits;
@@ -164,12 +166,9 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 	}
 	
 	@Override
-	public List<Prescription> findPrescriptionsByPatient(final Patient patient) throws APIException {
+	public List<Prescription> findPrescriptionsByPatient(final Patient patient) throws PharmacyBusinessException {
 
 		final List<Prescription> prescriptions = new ArrayList<>();
-
-		// final List<Order> orders = this.orderService.getActiveOrders(patient,
-		// null, null, null);
 
 		this.dbSessionManager.setManualFlushMode();
 		final List<DrugOrder> drugOrders = this.dispensationDAO.findLastDrugOrdersByLastPatientEncounter(patient);
@@ -179,7 +178,7 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 
 			if ((drugOrder.getQuantity() == null) || (drugOrder.getQuantity().doubleValue() == 0)) {
 				drugOrder.setQuantity(this.calculateDrugQuantity(drugOrder));
-				this.dispensationDAO.updateOrderQuantity(drugOrder);
+				this.dispensationDAO.updateDrugOrder(drugOrder);
 			}
 
 			this.setPrescriptionInstructions(drugOrder, prescription);
@@ -187,56 +186,65 @@ public class PrescriptionServiceImpl extends BaseOpenmrsService implements Presc
 			prescription.setPrescriptionDate(drugOrder.getEncounter().getEncounterDatetime());
 			prescription.setDrugToPickUp(drugOrder.getQuantity());
 
-			if (this.hasArvDrug(drugOrder)) {
+			if (this.isArvDrug(prescription, drugOrder)) {
 				prescription.setConceptParentUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
 				prescription.setDrugPickedUp(this.calculateDrugPikckedUp(drugOrder));
 				prescription.setDrugToPickUp((drugOrder.getQuantity() - prescription.getDrugPickedUp()));
 			}
+
 			prescriptions.add(prescription);
 		}
-		// for (final Order order : orders) {
-		// final Prescription prescription = new Prescription(order);
-		//
-		// this.setPrescriptionInstructions(order, prescription);
-		// prescription.setProvider(order.getOrderer().getName());
-		// prescription.setPrescriptionDate(order.getEncounter().getEncounterDatetime());
-		// prescription.setDrugToPickUp(((DrugOrder) order).getQuantity());
-		//
-		// if (this.hasArvDrug(order)) {
-		// prescription.setConceptParentUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
-		// prescription.setDrugPickedUp(this.calculateDrugPikckedUp((DrugOrder)
-		// order));
-		// prescription.setDrugToPickUp(((DrugOrder) order).getQuantity() -
-		// prescription.getDrugPickedUp());
-		// }
-		//
-		// prescriptions.add(prescription);
-		// }
 
 		return prescriptions;
 	}
 	
-	private boolean hasArvDrug(final Order order) {
+	private boolean isArvDrug(final Prescription prescription, final DrugOrder drugOrder) throws PharmacyBusinessException {
 		
-		final Concept concept = this.conceptService.getConceptByUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
-		final List<ConceptSearchResult> findConceptAnswers = this.conceptService.findConceptAnswers(null,
-		    Context.getLocale(), concept);
+		final DrugRegimeService drugRegimeService = Context.getService(DrugRegimeService.class);
+		final DrugItemService drugItemService = Context.getService(DrugItemService.class);
 		
-		for (final ConceptSearchResult conceptSearchResult : findConceptAnswers) {
-			if (order.getConcept().getUuid().equals(conceptSearchResult.getConcept().getUuid())) {
-				return true;
-			}
+		final Concept regime = Context.getConceptService().getConceptByUuid("e1de8966-1d5f-11e0-b929-000c29ad1d07");
+		
+		final DrugItem drugItem;
+		try {
+			drugItem = drugItemService.findDrugItemByDrug(drugOrder.getDrug());
+			
 		}
-		return false;
+		catch (final EntityNotFoundException e) {
+			
+			// FIXME:Remover esse code comment antes de comitar
+			// throw new IllegalArgumentException("Drug_Item not found for Drug
+			// " + drugOrder.getDrug());
+			return false;
+		}
+		
+		try {
+			prescription.setDrugRegime(drugRegimeService.findDrugRegimeByRegimeAndDrugItem(regime, drugItem));
+			return Boolean.TRUE;
+			
+		}
+		catch (final EntityNotFoundException e) {
+			return Boolean.FALSE;
+		}
 	}
 	
-	// private void setPrescriptionInstructions(final Order order, final
-	// Prescription prescription) {
-	// final String dosingInstructions = ((DrugOrder)
-	// order).getDosingInstructions();
+	// private boolean hasArvDrug(final Order order) {
+	//
 	// final Concept concept =
-	// this.conceptService.getConceptByUuid(dosingInstructions);
-	// prescription.setDosingInstructions(concept.getNames().iterator().next().getName());
+	// this.conceptService.getConceptByUuid(MappedConcepts.PREVIOUS_ANTIRETROVIRAL_DRUGS);
+	// final List<ConceptSearchResult> findConceptAnswers =
+	// this.conceptService.findConceptAnswers(null,
+	// Context.getLocale(), concept);
+	//
+	// for (final ConceptSearchResult conceptSearchResult : findConceptAnswers)
+	// {
+	// if
+	// (order.getConcept().getUuid().equals(conceptSearchResult.getConcept().getUuid()))
+	// {
+	// return true;
+	// }
+	// }
+	// return false;
 	// }
 	
 	private void setPrescriptionInstructions(final DrugOrder drugOrder, final Prescription prescription) {

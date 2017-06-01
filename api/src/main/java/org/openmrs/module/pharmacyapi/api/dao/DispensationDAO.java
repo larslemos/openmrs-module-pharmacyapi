@@ -18,5 +18,5 @@ public interface DispensationDAO {
 	
 	List<DrugOrder> findLastDrugOrdersByLastPatientEncounter(final Patient patient);
 	
-	void updateOrderQuantity(DrugOrder drugOrder);
+	void updateDrugOrder(DrugOrder drugOrder);
 }

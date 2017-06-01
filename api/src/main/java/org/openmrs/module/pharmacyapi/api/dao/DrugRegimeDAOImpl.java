@@ -10,6 +10,8 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Concept;
+import org.openmrs.module.pharmacyapi.api.exception.EntityNotFoundException;
+import org.openmrs.module.pharmacyapi.api.model.DrugItem;
 import org.openmrs.module.pharmacyapi.api.model.DrugRegime;
 
 /**
@@ -53,5 +55,29 @@ public class DrugRegimeDAOImpl implements DrugRegimeDAO {
 		
 		return (DrugRegime) this.sessionFactory.getCurrentSession().createQuery("from DrugRegime dr where dr.uuid = :uuid")
 		        .setString("uuid", uuid).uniqueResult();
+	}
+	
+	@Override
+	public DrugRegime findByRegimeAndDrugItem(final Concept regime, final DrugItem drugItem) throws EntityNotFoundException {
+		
+		final DrugRegime drugRegime = (DrugRegime) this.sessionFactory.getCurrentSession()
+		        .getNamedQuery(DrugRegimeDAO.QUERY_NAME.findByRegimeAndDrugItem).setParameter("regime", regime)
+		        .setParameter("drugItem", drugItem).uniqueResult();
+		
+		if (drugRegime == null) {
+			throw new EntityNotFoundException(DrugRegime.class);
+		}
+		
+		return drugRegime;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DrugRegime> findByDrugUuid(final String drugUuid) {
+		
+		final Query query = this.sessionFactory.getCurrentSession().getNamedQuery(DrugRegimeDAO.QUERY_NAME.findByDrugUuid)
+		        .setParameter("drugUuid", drugUuid);
+		
+		return query.list();
 	}
 }

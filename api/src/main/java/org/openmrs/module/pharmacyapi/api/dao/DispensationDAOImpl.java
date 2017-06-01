@@ -11,7 +11,6 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 
 /**
- * ss
  */
 public class DispensationDAOImpl implements DispensationDAO {
 	
@@ -27,7 +26,11 @@ public class DispensationDAOImpl implements DispensationDAO {
 	@Override
 	public List<DrugOrder> findLastDrugOrdersByLastPatientEncounter(final Patient patient) {
 		
-		final String hql = "select distinct drugOrder from DrugOrder drugOrder join fetch drugOrder.drug drug join fetch drugOrder.encounter encounter join fetch  encounter.patient patient where patient = :patient and drugOrder.dispenseAsWritten is false and drugOrder.action not in('DISCONTINUE') and drugOrder.dateStopped is null order by drugOrder.action desc, drugOrder.dateCreated desc";
+		final String hql = "select distinct drugOrder from DrugOrder drugOrder " + " join fetch drugOrder.drug drug "
+		        + " join fetch drugOrder.encounter encounter " + " join fetch encounter.patient patient "
+		        + " where patient = :patient " + " and drugOrder.dispenseAsWritten is false "
+		        + " and drugOrder.action not in('DISCONTINUE') "
+		        + " and drugOrder.dateStopped is null order by drugOrder.action desc, drugOrder.dateCreated desc";
 		
 		final Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
 		query.setParameter("patient", patient);
@@ -36,7 +39,7 @@ public class DispensationDAOImpl implements DispensationDAO {
 	}
 	
 	@Override
-	public void updateOrderQuantity(final DrugOrder drugOrder) {
+	public void updateDrugOrder(final DrugOrder drugOrder) {
 		
 		this.sessionFactory.getCurrentSession().update(drugOrder);
 	}

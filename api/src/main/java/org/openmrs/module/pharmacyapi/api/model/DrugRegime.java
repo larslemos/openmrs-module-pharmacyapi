@@ -19,10 +19,12 @@ import javax.persistence.UniqueConstraint;
 import org.openmrs.Concept;
 import org.openmrs.module.pharmacyapi.api.dao.DrugRegimeDAO;
 
-@NamedQueries(value = { @NamedQuery(name = DrugRegimeDAO.QUERY_NAME.findByRegime, query = DrugRegimeDAO.QUERY.findByRegime) })
+@NamedQueries(value = {
+        @NamedQuery(name = DrugRegimeDAO.QUERY_NAME.findByRegime, query = DrugRegimeDAO.QUERY.findByRegime),
+        @NamedQuery(name = DrugRegimeDAO.QUERY_NAME.findByRegimeAndDrugItem, query = DrugRegimeDAO.QUERY.findByRegimeAndDrugItem),
+        @NamedQuery(name = DrugRegimeDAO.QUERY_NAME.findByDrugUuid, query = DrugRegimeDAO.QUERY.findByDrugUuid) })
 @Entity
-@Table(name = "phm_drug_regime", uniqueConstraints = { @UniqueConstraint(columnNames = { "drug_item_id", "regime_id" }),
-        @UniqueConstraint(columnNames = { "uuid" }) })
+@Table(name = "phm_drug_regime", uniqueConstraints = { @UniqueConstraint(columnNames = { "drug_item_id", "regime_id" }) })
 public class DrugRegime extends BaseOpenmrsMetadataWrapper implements Serializable {
 	
 	private static final long serialVersionUID = -3770809635357840242L;

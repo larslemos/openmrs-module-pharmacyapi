@@ -41,11 +41,6 @@ public class DrugItemResource extends MetadataDelegatingCrudResource<DrugItem> {
 			final DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("drug", Representation.REF);
-			description.addProperty("pharmaceuticalForm", Representation.REF);
-			description.addProperty("therapeuticGroup", Representation.REF);
-			description.addProperty("therapeuticClass", Representation.REF);
-			description.addSelfLink();
-			description.addProperty("fnmCode");
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else {
@@ -65,7 +60,7 @@ public class DrugItemResource extends MetadataDelegatingCrudResource<DrugItem> {
 	
 	@Override
 	public DrugItem getByUniqueId(final String uniqueId) {
-		return Context.getService(DrugItemService.class).findByUuid(uniqueId);
+		return Context.getService(DrugItemService.class).findDrugItemByUuid(uniqueId);
 	}
 	
 	@Override
@@ -76,6 +71,7 @@ public class DrugItemResource extends MetadataDelegatingCrudResource<DrugItem> {
 	@Override
 	protected PageableResult doGetAll(final RequestContext context) throws ResponseException {
 
-		return new NeedsPaging<>(Context.getService(DrugItemService.class).findAll(context.getIncludeAll()), context);
+		return new NeedsPaging<>(Context.getService(DrugItemService.class).findAllDrugItem(context.getIncludeAll()),
+				context);
 	}
 }

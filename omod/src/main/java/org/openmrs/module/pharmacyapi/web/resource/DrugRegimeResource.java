@@ -88,15 +88,17 @@ public class DrugRegimeResource extends MetadataDelegatingCrudResource<DrugRegim
 
 		final String regimeUuid = context.getRequest().getParameter("regime");
 
-		if (regimeUuid == null) {
-			return new EmptySearchResult();
-		}
-		final Concept regime = Context.getConceptService().getConceptByUuid(regimeUuid);
-		if (regime == null) {
-			return new EmptySearchResult();
-		}
-		final DrugRegimeService drugRegimeService = Context.getService(DrugRegimeService.class);
+		if (regimeUuid != null) {
 
-		return new NeedsPaging<>(drugRegimeService.findDrugRegimesByRegime(regime), context);
+			final Concept regime = Context.getConceptService().getConceptByUuid(regimeUuid);
+			if (regime == null) {
+				return new EmptySearchResult();
+			}
+			final DrugRegimeService drugRegimeService = Context.getService(DrugRegimeService.class);
+
+			return new NeedsPaging<>(drugRegimeService.findDrugRegimesByRegime(regime), context);
+		}
+
+		return new EmptySearchResult();
 	}
 }

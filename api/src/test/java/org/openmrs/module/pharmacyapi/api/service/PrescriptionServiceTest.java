@@ -39,7 +39,7 @@ public class PrescriptionServiceTest extends BaseTest {
 	
 	@Test
 	@Ignore
-	public void shouldFindPreparedPrescriptionsByPatient() {
+	public void shouldFindPreparedPrescriptionsByPatient() throws Exception {
 		
 		final Patient patient = EntityFactory.gimme(Patient.class, PatientTemplate.VALID);
 		final List<DrugOrder> orders = EntityFactory.gimme(DrugOrder.class, 5, OrderTemplate.DRUG_ORDER);
