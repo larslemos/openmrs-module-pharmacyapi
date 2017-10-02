@@ -6,6 +6,7 @@
 # eSaude Pharmacy API
 
 [![Build Status](https://travis-ci.org/esaude/openmrs-module-pharmacyapi.svg?branch=master)](https://travis-ci.org/esaude/openmrs-module-pharmacyapi)
+[![Code Quality](https://img.shields.io/codacy/10ea6c2d88674139b37cae5fa73cc8f6/master.svg)](https://www.codacy.com/app/psbrandt/esaude-esaude-emr-poc)
 [![eSaude Slack](https://slack.esaude.org/badge.svg)](https://slack.esaude.org)
 
 This module provides the pharmacy REST resources for the [eSaude POC system](https://github.com/esaude/esaude-emr-poc). For
